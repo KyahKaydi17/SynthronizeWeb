@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communities Dashboard</title>
+    <link rel="stylesheet" href="css/communities.css">
+</head>
+<body>
+    <header>
+        <div class="menu-toggle">
+            <img src="images/menu.png" alt="Menu">
+        </div>
+        <h1>Synthronize System Administrator</h1>
+        <nav>
+            <div class="close-btn">
+                <img src="images/menu.png" alt="Close">
+            </div>
+            <ul>
+                <li><a href="#reports">Reports</a></li>
+                <li><a href="users.html">Users</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><a href="login.html">Sign Out</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Communities Dashboard</h2>
+        <input type="text" id="searchBar" placeholder="Search communities..." onkeyup="searchCommunities()">
+        <div class="container">
+            <div class="communities-container">
+                <h3>Communities</h3>
+                <ul id="communityList">
+                    <!-- Communities will be loaded here -->
+                </ul>
+            </div>
+            <div class="community-info-container">
+                <h3>Community Information</h3>
+                <div id="communityInfo">
+                    <p>Select a community to see its information.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <!-- Your custom script -->
+    <script src="js/communities.js"></script>
+    <script src="js/menu-toggle.js"></script>
+</body>
+</html>
