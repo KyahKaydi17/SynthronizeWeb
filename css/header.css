@@ -2,7 +2,8 @@
 
 /* Header styles */
 header {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
+    background: linear-gradient(0deg, #008080, #000000);
+
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -37,7 +38,7 @@ header nav {
     left: -450px; /* Initially off-screen */
     width: 250px;
     height: 100%;
-    background: linear-gradient(135deg, #6c757d, #5a6268);
+    background: #008080;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -85,8 +86,101 @@ header nav ul li a {
     display: block;
 }
 
+header nav .user-info{
+  height: 78px;
+  width: 240px;
+  border-radius:8px;
+  background-color: #fff;
+} 
+
+header nav .user-info .user-image{
+    border-radius:48px ;
+    height:64px;
+    width:64px;
+    margin:8px;
+    background-color: black;
+}
+header nav .user-info img{
+    border-radius:48px ;
+    height:64px;
+    width:64px;
+    margin:8px;
+}
+
+
 header nav ul li a:hover {
     color: #007bff;
     background-color: #ffffff20;
     transform: scale(1.05);
+}
+
+/* Profile button and menu styles */
+.profile-container {
+    position: relative;
+}
+
+.profile-button {
+    background: url('images/user.png') no-repeat center center;
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.profile-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    display: none;
+    z-index: 1000;
+}
+
+.profile-menu.open {
+    display: block;
+}
+
+.profile-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.profile-menu a:hover {
+    background: #f5f5f5;
+}
+
+.profile-menu a:active {
+    background: #e0e0e0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info img {
+    margin-right: 10px;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-details .username {
+    font-size: 16px;
+    color: black;
+}
+
+.user-details .role {
+    font-size: 10px;
+    color: gray;
 }

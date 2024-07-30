@@ -1,13 +1,27 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var menuToggle = document.querySelector('header .menu-toggle');
-    var closeButton = document.querySelector('header nav .close-btn');
-    var nav = document.querySelector('header nav');
+// menu-toggle.js
 
-    menuToggle.addEventListener('click', function() {
-        nav.classList.add('open');
+document.addEventListener('DOMContentLoaded', function () {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('header nav');
+    const closeBtn = document.querySelector('header nav .close-btn');
+    const accountButton = document.querySelector('.account-button');
+    const accountMenu = document.querySelector('.account-menu');
+
+    menuToggle.addEventListener('click', function () {
+        nav.classList.toggle('open');
     });
 
-    closeButton.addEventListener('click', function() {
+    closeBtn.addEventListener('click', function () {
         nav.classList.remove('open');
+    });
+
+    accountButton.addEventListener('click', function () {
+        accountMenu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!accountButton.contains(event.target) && !accountMenu.contains(event.target)) {
+            accountMenu.classList.remove('open');
+        }
     });
 });
