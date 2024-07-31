@@ -94,4 +94,210 @@ main {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+/* Styles for editable user info fields */
+.user-info-container input[type="text"],
+.user-info-container input[type="date"],
+.user-info-container input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
 
+.user-info-container input[type="text"]:read-only {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+/* Stylish buttons */
+.user-info-container button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-right: 5px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.user-info-container button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.user-info-container button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional styles for the delete button */
+.user-info-container button.delete {
+    background-color: #dc3545;
+    align-self: ;
+}
+
+.user-info-container button.delete:hover {
+    background-color: #c82333;
+}
+
+.user-info-container button.delete:active {
+    background-color: #bd2130;
+}
+
+/* Style for profile photo */
+.user-info-container img {
+    display: block;
+    margin: 10px 0;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .user-info-container input[type="text"],
+    .user-info-container input[type="date"],
+    .user-info-container input[type="file"] {
+        width: calc(100% - 10px);
+    }
+}
+
+/* Styles for Create User button in left container */
+.create-user-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.create-user-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.create-user-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for Create User popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker background */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: linear-gradient(to bottom, #004d40, #009688); /* Teal gradient */
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #004d40;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: popupFadeIn 0.3s ease-out;
+    color: #fff;
+}
+
+.popup-content h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.popup-content input,
+.popup-content select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #00796b; /* Teal border */
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: #e0f2f1; /* Light teal background for input */
+    color: #004d40; /* Dark teal text color */
+}
+
+.popup-content button {
+    padding: 10px 20px;
+    background-color: #004d40;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    border-radius: 4px;
+}
+
+.popup-content button:hover {
+    background-color: #00332e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.popup-content button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popup .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Popup fade-in animation */
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Styles for user info container */
+.user-info-container select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #00796b; /* Teal border */
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: #e0f2f1; /* Light teal background for select */
+    color: #004d40; /* Dark teal text color */
+}

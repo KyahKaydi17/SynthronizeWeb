@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users Dashboard</title>
+    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/users.css">
 </head>
 <body>
@@ -14,11 +15,8 @@
         <h1>Synthronize System Administrator</h1>
         <div class="account-container">
             <div class="account-button"></div>
-            <div class="account-menu">
-                <a href="#account">Account</a>
-                <a href="login.html">Sign Out</a>
-            </div>
-        <nav>
+            
+        <nav class="left-nav">
             <div class="close-btn">
                 <img src="images/menu.png" alt="Close">
             </div>
@@ -45,6 +43,7 @@
         <div class="container">
             <div class="users-container">
                 <h3>Users</h3>
+                <button class="create-user-button" onclick="showCreateUserPopup()">Create New User</button>
                 <ul id="userList">
                     <!-- Users will be loaded here -->
                 </ul>
@@ -57,8 +56,43 @@
             </div>
         </div>
     </main>
+    <nav class="right-nav">
+        <ul>
+            <li><img src="images/profile.png" alt="profile" ></li>
+            <li><img src="images/settings.png" alt="settings"></li>
+        </ul>
+    </nav>
+    
+    <!-- Create User Popup -->
+    <div id="createUserPopup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="HideCreateUserPopup()">&times;</span>
+            <h2>Create New User</h2>
+            <input type="email" id="newUserEmail" placeholder="Email" required>
+            <input type="password" id="newUserPassword" placeholder="Password" required>
+            <select id="newUserRole">
+                <option value="System Admin">System Admin</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Moderator">Moderator</option>
+                <option value="Student">Student</option>
+            </select>
+            <button onclick="createNewUser()">Create User</button>
+        </div>
+    </div>
+    <!-- Add this to your HTML -->
+<div id="verificationPrompt" style="display:none;">
+    <div class="prompt-container">
+        <h3>Verify Your Email</h3>
+        <p>Please verify your email address before proceeding. You will receive a confirmation once your email is verified.</p>
+        <button onclick="checkEmailVerification()">Check Verification Status</button>
+        <button onclick="hideVerificationPrompt()">Close</button>
+    </div>
+</div>
+
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
     <!-- Your custom script -->
     <script src="js/users.js"></script>

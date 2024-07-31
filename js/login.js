@@ -9,6 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         message.style.color = 'green';
         message.textContent = 'Login successful!';
         setTimeout(function() {
+            window.open('images/rickroll.mp4', '_blank');
             window.location.href = 'users.html';
         }, 1000); // Redirects after 1 second
     } else {

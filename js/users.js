@@ -7,9 +7,11 @@ const firebaseConfig = {
     storageBucket: "synthronize.appspot.com",
     messagingSenderId: "360481503787",
     appId: "1:360481503787:web:2ed05b2c6ade021314886e"
-  };
+};
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
 // Reference to the Firestore database
 var db = firebase.firestore();
 
@@ -19,10 +21,29 @@ function displayUserInfo(username) {
         if (doc.exists) {
             var userInfo = doc.data();
             var userInfoContainer = document.getElementById('userInfo');
+
+            // Access profile_photo from userMedia
+            var profilePhoto = userInfo.userMedia ? userInfo.userMedia.profile_photo : '';
+
             userInfoContainer.innerHTML = `
-                <p><strong>Username:</strong> ${userInfo.username}</p>
-                <p><strong>Full Name:</strong> ${userInfo.fullName}</p>
-                <p><strong>Birthday:</strong> ${userInfo.birthday}</p>
+                <p><strong>Username:</strong> <input type="text" id="editUsername" value="${userInfo.username}" readonly></p>
+                <p><strong>Full Name:</strong> <input type="text" id="editFullName" value="${userInfo.fullName}"></p>
+                <p><strong>Birthday:</strong> <input type="date" id="editBirthday" value="${userInfo.birthday}"></p>
+                <p><strong>Role:</strong>
+                    <select id="roleSelect" onchange="updateUserRole(this.value)">
+                    <option value="Not Set" ${userInfo.role === 'Not Set' ? 'selected' : ''}>Not Set</option>
+                        <option value="System Admin" ${userInfo.role === 'System Admin' ? 'selected' : ''}>System Admin</option>
+                        <option value="Teacher" ${userInfo.role === 'Teacher' ? 'selected' : ''}>Teacher</option>
+                        <option value="Moderator" ${userInfo.role === 'Moderator' ? 'selected' : ''}>Moderator</option>
+                        <option value="Student" ${userInfo.role === 'Student' ? 'selected' : ''}>Student</option>
+                    </select>
+                </p>
+                ${profilePhoto ? `<img id="profilePhoto" src="${profilePhoto}" alt="Profile Photo" style="width: 100px; height: 100px; border-radius: 50%;"><br>` : '<img id="profilePhoto" style="display:none;"><br>'}
+                <input type="file" id="profilePhotoUpload" accept="image/*"><br>
+                <button onclick="uploadProfilePhoto('${username}')">Upload Photo</button>
+                <button onclick="deleteProfilePhoto('${username}')">Delete Photo</button>
+                <button onclick="saveUserInfo('${username}')">Save</button>
+                <button class="delete" onclick="deleteUser('${username}')">Delete User</button>
             `;
         } else {
             document.getElementById('userInfo').innerHTML = '<p>No user information available.</p>';
@@ -30,6 +51,81 @@ function displayUserInfo(username) {
     }).catch(function(error) {
         console.error("Error getting document: ", error);
     });
+}
+
+// Function to upload profile photo
+function uploadProfilePhoto(username) {
+    var fileInput = document.getElementById('profilePhotoUpload');
+    var file = fileInput.files[0];
+    if (file) {
+        var storageRef = firebase.storage().ref();
+        var uploadTask = storageRef.child('profile_photos/' + username + '_' + file.name).put(file);
+
+        uploadTask.on('state_changed', function(snapshot){
+            // Observe state change events such as progress, pause, and resume
+        }, function(error) {
+            console.error("Error uploading file: ", error);
+        }, function() {
+            // Handle successful uploads on complete
+            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                db.collection('users').doc(username).update({
+                    'userMedia.profile_photo': downloadURL
+                }).then(function() {
+                    alert('Profile photo uploaded successfully');
+                    displayUserInfo(username); // Refresh the displayed info
+                }).catch(function(error) {
+                    console.error("Error updating document: ", error);
+                });
+            });
+        });
+    } else {
+        alert('No file selected');
+    }
+}
+
+// Function to delete profile photo
+function deleteProfilePhoto(username) {
+    db.collection('users').doc(username).update({
+        'userMedia.profile_photo': firebase.firestore.FieldValue.delete()
+    }).then(function() {
+        alert('Profile photo deleted successfully');
+        displayUserInfo(username); // Refresh the displayed info
+    }).catch(function(error) {
+        console.error("Error updating document: ", error);
+    });
+}
+
+// Function to save user info
+function saveUserInfo(username) {
+    var fullName = document.getElementById('editFullName').value;
+    var birthday = document.getElementById('editBirthday').value;
+    var profilePhoto = document.getElementById('profilePhoto').src;
+    var role = document.getElementById('roleSelect').value;
+
+    db.collection('users').doc(username).update({
+        fullName: fullName,
+        birthday: birthday,
+        'userMedia.profile_photo': profilePhoto,
+        role: role
+    }).then(function() {
+        alert('User information updated successfully');
+        displayUserInfo(username); // Refresh the displayed info
+    }).catch(function(error) {
+        console.error("Error updating document: ", error);
+    });
+}
+
+// Function to delete user
+function deleteUser(username) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        db.collection('users').doc(username).delete().then(function() {
+            alert('User deleted successfully');
+            document.getElementById('userInfo').innerHTML = '<p>Select a user to see their information.</p>';
+            loadUsers(); // Refresh the users list
+        }).catch(function(error) {
+            console.error("Error deleting document: ", error);
+        });
+    }
 }
 
 // Function to search users
@@ -63,3 +159,76 @@ window.onload = function() {
         console.error("Error getting documents: ", error);
     });
 };
+
+// Function to show Create User popup
+function showCreateUserPopup() {
+    document.getElementById('createUserPopup').style.display = 'flex';
+}
+
+// Function to hide Create User popup
+function hideCreateUserPopup() {
+    document.getElementById('createUserPopup').style.display = 'none';
+}
+
+// Function to create a new user
+function createNewUser() {
+    var email = document.getElementById('newUserEmail').value;
+    var password = document.getElementById('newUserPassword').value;
+    var role = document.getElementById('newUserRole').value;
+    var username = generateRandomUsername();
+    var defaultBirthday = '01/01/2001'; // Default birthday
+
+    firebase.auth().fetchSignInMethodsForEmail(email)
+        .then(function(signInMethods) {
+            if (signInMethods.length === 0) {
+                // Email is not registered, create new user
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then(function(userCredential) {
+                        // Send verification email
+                        userCredential.user.sendEmailVerification().then(() => {
+                            alert('Verification email sent to ' + email);
+                        }).catch((error) => {
+                            console.error('Error sending verification email: ', error);
+                        });
+
+                        // Hide the popup and clear inputs
+                        hideCreateUserPopup();
+                        document.getElementById('newUserEmail').value = '';
+                        document.getElementById('newUserPassword').value = '';
+
+                        // Add the user to Firestore with initial data
+                        db.collection('users').doc(userCredential.user.uid).set({
+                            username: username,
+                            userID: userCredential.user.uid, // Use Firebase user ID
+                            role: role,
+                            birthday: defaultBirthday, // Set default birthday
+                            created_at: firebase.firestore.FieldValue.serverTimestamp(),
+                            userMedia: {
+                                profile_photo: '', // Default empty
+                                profile_cover_photo: '' // Default empty
+                            }
+                        }).then(() => {
+                            alert('User created and added to Firestore');
+                            loadUsers(); // Refresh the users list
+                        }).catch((error) => {
+                            console.error('Error adding user to Firestore: ', error);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error creating user: ', error);
+                        alert('Error creating user: ' + error.message);
+                    });
+            } else {
+                alert('Email is already registered.');
+            }
+        })
+        .catch(function(error) {
+            console.error('Error fetching sign-in methods: ', error);
+        });
+}
+
+// Function to generate a random username
+function generateRandomUsername() {
+    var randomNum = Math.floor(Math.random() * 10000); // Generate a random number
+    return 'User' + randomNum; // Return a random username
+}
