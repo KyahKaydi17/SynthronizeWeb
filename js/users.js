@@ -13,8 +13,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 // Reference to the Firestore database
-var db = firebase.firestore();
-
+const db = firebase.firestore();
+const auth = firebase.auth();
 // Function to display user info
 function displayUserInfo(username) {
     db.collection('users').doc(username).get().then(function(doc) {
@@ -26,23 +26,28 @@ function displayUserInfo(username) {
             var profilePhoto = userInfo.userMedia ? userInfo.userMedia.profile_photo : '';
 
             userInfoContainer.innerHTML = `
-                <p><strong>Username:</strong> <input type="text" id="editUsername" value="${userInfo.username}" readonly></p>
-                <p><strong>Full Name:</strong> <input type="text" id="editFullName" value="${userInfo.fullName}"></p>
-                <p><strong>Birthday:</strong> <input type="date" id="editBirthday" value="${userInfo.birthday}"></p>
+                <p><strong>Username:</strong> <input type="text" id="editUsername" value="${userInfo.username}" readonly>
+                <button onclick="enableEdit('username')">Edit</button> 
+                <button id="saveUsername" onclick="saveUsername('${username}')" disabled>Save</button></p>
+                <p><strong>Full Name:</strong> <input type="text" id="editFullName" value="${userInfo.fullName}" readonly>
+                <button onclick="enableEdit('fullName')">Edit</button> 
+                <button id="saveFullName" onclick="saveFullName('${username}')" disabled>Save</button></p>
+                
                 <p><strong>Role:</strong>
-                    <select id="roleSelect" onchange="updateUserRole(this.value)">
-                    <option value="Not Set" ${userInfo.role === 'Not Set' ? 'selected' : ''}>Not Set</option>
-                        <option value="System Admin" ${userInfo.role === 'System Admin' ? 'selected' : ''}>System Admin</option>
-                        <option value="Teacher" ${userInfo.role === 'Teacher' ? 'selected' : ''}>Teacher</option>
-                        <option value="Moderator" ${userInfo.role === 'Moderator' ? 'selected' : ''}>Moderator</option>
-                        <option value="Student" ${userInfo.role === 'Student' ? 'selected' : ''}>Student</option>
+                    <select id="roleSelect" disabled onchange="detectRoleChange()">
+                        <option value="Not Set" ${userInfo.userType === 'Not Set' ? 'selected' : ''}>Not Set</option>
+                        <option value="System Admin" ${userInfo.userType === 'System Admin' ? 'selected' : ''}>System Admin</option>
+                        <option value="Teacher" ${userInfo.userType === 'Teacher' ? 'selected' : ''}>Teacher</option>
+                        <option value="Moderator" ${userInfo.userType === 'Moderator' ? 'selected' : ''}>Moderator</option>
+                        <option value="Student" ${userInfo.userType === 'Student' ? 'selected' : ''}>Student</option>
                     </select>
+                    <button onclick="enableEdit('role')">Edit</button> 
+                    <button id="saveRole" onclick="saveRole('${username}')" disabled>Save</button>
                 </p>
                 ${profilePhoto ? `<img id="profilePhoto" src="${profilePhoto}" alt="Profile Photo" style="width: 100px; height: 100px; border-radius: 50%;"><br>` : '<img id="profilePhoto" style="display:none;"><br>'}
                 <input type="file" id="profilePhotoUpload" accept="image/*"><br>
                 <button onclick="uploadProfilePhoto('${username}')">Upload Photo</button>
                 <button onclick="deleteProfilePhoto('${username}')">Delete Photo</button>
-                <button onclick="saveUserInfo('${username}')">Save</button>
                 <button class="delete" onclick="deleteUser('${username}')">Delete User</button>
             `;
         } else {
@@ -51,6 +56,76 @@ function displayUserInfo(username) {
     }).catch(function(error) {
         console.error("Error getting document: ", error);
     });
+}
+
+// Function to enable editing for a specific field
+function enableEdit(field) {
+    if (field === 'role') {
+        document.getElementById('roleSelect').disabled = false;
+        document.getElementById('saveRole').disabled = false;
+    } else {
+        document.getElementById('edit' + capitalizeFirstLetter(field)).removeAttribute('readonly');
+        document.getElementById('save' + capitalizeFirstLetter(field)).disabled = false;
+    }
+}
+
+// Function to save username
+function saveUsername(username) {
+    var newUsername = document.getElementById('editUsername').value;
+    if (newUsername !== username) {
+        db.collection('users').doc(username).update({
+            username: newUsername
+        }).then(function() {
+            alert('Username updated successfully');
+            displayUserInfo(newUsername); // Refresh the displayed info
+        }).catch(function(error) {
+            console.error("Error updating document: ", error);
+        });
+    }
+}
+
+// Function to save full name
+function saveFullName(username) {
+    var fullName = document.getElementById('editFullName').value;
+    db.collection('users').doc(username).update({
+        fullName: fullName
+    }).then(function() {
+        alert('Full name updated successfully');
+        displayUserInfo(username); // Refresh the displayed info
+    }).catch(function(error) {
+        console.error("Error updating document: ", error);
+    });
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+
+// Function to save role
+function saveRole(username) {
+    var role = document.getElementById('roleSelect').value;
+    db.collection('users').doc(username).update({
+        userType:role
+    }).then(function() {
+        alert('Role updated successfully');
+        displayUserInfo(username); // Refresh the displayed info
+    }).catch(function(error) {
+        console.error("Error updating document: ", error);
+    });
+}
+
+// Function to format date from dd/mm/yyyy to mm/dd/yyyy
+function formatDateForFirestore(dateString) {
+    var parts = dateString.split('/');
+    return [parts[1], parts[0], parts[2]].join('/');
+}
+
+// Function to format date from mm/dd/yyyy to dd/mm/yyyy for display
+function formatDate(dateString) {
+    var parts = dateString.split('/');
+    return [parts[1], parts[0], parts[2]].join('/');
 }
 
 // Function to upload profile photo
@@ -95,38 +170,51 @@ function deleteProfilePhoto(username) {
     });
 }
 
-// Function to save user info
-function saveUserInfo(username) {
-    var fullName = document.getElementById('editFullName').value;
-    var birthday = document.getElementById('editBirthday').value;
-    var profilePhoto = document.getElementById('profilePhoto').src;
-    var role = document.getElementById('roleSelect').value;
-
-    db.collection('users').doc(username).update({
-        fullName: fullName,
-        birthday: birthday,
-        'userMedia.profile_photo': profilePhoto,
-        role: role
-    }).then(function() {
-        alert('User information updated successfully');
-        displayUserInfo(username); // Refresh the displayed info
-    }).catch(function(error) {
-        console.error("Error updating document: ", error);
-    });
-}
-
+// Function to delete user
+// Function to delete user
 // Function to delete user
 function deleteUser(username) {
+
+    
     if (confirm('Are you sure you want to delete this user?')) {
-        db.collection('users').doc(username).delete().then(function() {
-            alert('User deleted successfully');
-            document.getElementById('userInfo').innerHTML = '<p>Select a user to see their information.</p>';
-            loadUsers(); // Refresh the users list
-        }).catch(function(error) {
-            console.error("Error deleting document: ", error);
-        });
-    }
+                var password = prompt("Please enter your password to confirm user deletion:");
+                if (password) {
+                    var user = auth.currentUser;
+                    var credentials = firebase.auth.EmailAuthProvider.credential(user.email, password);
+                    user.reauthenticateWithCredential(credentials).then(function() {
+                        db.collection('users').doc(username).delete().then(function() {
+                            console.log("User deleted from Firestore.");
+                            alert('User deleted successfully');
+                            document.getElementById('userInfo').innerHTML = '<p>Select a user to see their information.</p>';
+                            loadUsers(); // Refresh the users list
+                            
+                            // Delete the authenticated user
+                            user.delete().then(function() {
+                                console.log("Authenticated user deleted.");
+                            }).catch(function(error) {
+                                console.error("Error deleting authenticated user: ", error);
+                            });
+                        }).catch(function(error) {
+                            console.error("Error deleting user from Firestore: ", error);
+                        });
+
+                        
+                    }).catch(function(error) {
+                        console.error("Error re-authenticating user: ", error);
+                        alert("Re-authentication failed: " + error.message);
+                    });
+
+                    
+
+                
+                
+                } else {
+                    alert("Password is required to delete user.");
+                }
+            }
 }
+
+
 
 // Function to search users
 function searchUsers() {
@@ -183,41 +271,41 @@ function createNewUser() {
             if (signInMethods.length === 0) {
                 // Email is not registered, create new user
                 firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .then(function(userCredential) {
-                        // Send verification email
-                        userCredential.user.sendEmailVerification().then(() => {
-                            alert('Verification email sent to ' + email);
-                        }).catch((error) => {
-                            console.error('Error sending verification email: ', error);
-                        });
-
-                        // Hide the popup and clear inputs
-                        hideCreateUserPopup();
-                        document.getElementById('newUserEmail').value = '';
-                        document.getElementById('newUserPassword').value = '';
-
-                        // Add the user to Firestore with initial data
-                        db.collection('users').doc(userCredential.user.uid).set({
-                            username: username,
-                            userID: userCredential.user.uid, // Use Firebase user ID
-                            role: role,
-                            birthday: defaultBirthday, // Set default birthday
-                            created_at: firebase.firestore.FieldValue.serverTimestamp(),
-                            userMedia: {
-                                profile_photo: '', // Default empty
-                                profile_cover_photo: '' // Default empty
-                            }
-                        }).then(() => {
-                            alert('User created and added to Firestore');
-                            loadUsers(); // Refresh the users list
-                        }).catch((error) => {
-                            console.error('Error adding user to Firestore: ', error);
-                        });
-                    })
-                    .catch((error) => {
-                        console.error('Error creating user: ', error);
-                        alert('Error creating user: ' + error.message);
+                .then(function(userCredential) {
+                    // Send verification email
+                    userCredential.user.sendEmailVerification().then(() => {
+                        alert('Verification email sent to ' + email);
+                    }).catch((error) => {
+                        console.error('Error sending verification email: ', error);
                     });
+
+                    // Hide the popup and clear inputs
+                    hideCreateUserPopup();
+                    document.getElementById('newUserEmail').value = '';
+                    document.getElementById('newUserPassword').value = '';
+
+                    // Add the user to Firestore with initial data
+                    db.collection('users').doc(userCredential.user.uid).set({
+                        username: username,
+                        userID: userCredential.user.uid, // Use Firebase user ID
+                        userType: role,
+                        birthday: defaultBirthday, // Set default birthday
+                        createdTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        userMedia: {
+                            profile_photo: '', // Default empty
+                            profile_cover_photo: '' // Default empty
+                        }
+                    }).then(() => {
+                        alert('User created and added to Firestore');
+                        loadUsers(); // Refresh the users list
+                    }).catch((error) => {
+                        console.error('Error adding user to Firestore: ', error);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error creating user: ', error);
+                    alert('Error creating user: ' + error.message);
+                });
             } else {
                 alert('Email is already registered.');
             }

@@ -66,7 +66,7 @@
     <!-- Create User Popup -->
     <div id="createUserPopup" class="popup">
         <div class="popup-content">
-            <span class="close" onclick="HideCreateUserPopup()">&times;</span>
+            <span class="close" onclick="hideCreateUserPopup()">&times;</span>
             <h2>Create New User</h2>
             <input type="email" id="newUserEmail" placeholder="Email" required>
             <input type="password" id="newUserPassword" placeholder="Password" required>
@@ -80,14 +80,7 @@
         </div>
     </div>
     <!-- Add this to your HTML -->
-<div id="verificationPrompt" style="display:none;">
-    <div class="prompt-container">
-        <h3>Verify Your Email</h3>
-        <p>Please verify your email address before proceeding. You will receive a confirmation once your email is verified.</p>
-        <button onclick="checkEmailVerification()">Check Verification Status</button>
-        <button onclick="hideVerificationPrompt()">Close</button>
-    </div>
-</div>
+
 
 
     <!-- Firebase SDK -->
