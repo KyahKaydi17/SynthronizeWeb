@@ -1,0 +1,210 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/* Layout */
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-wrap: wrap;
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    padding: 1.25rem;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.sidebar-header,
+.sidebar-menu {
+    padding: 1.25rem;
+}
+
+.sidebar-header {
+    border-bottom: 1px solid var(--secondary-color);
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.625rem;
+}
+
+.sidebar-menu a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a:focus {
+    color: var(--secondary-color);
+    outline: none;
+}
+
+.main-content {
+    flex: 1;
+    padding: 1.25rem;
+    min-width: 0;
+}
+
+.top-nav {
+    padding: 0.625rem;
+    border-bottom: 1px solid var(--secondary-color);
+    background-color: var(--primary-color);
+}
+
+.content-wrapper {
+    padding: 1.25rem;
+}
+
+/* User List */
+/* Styles for user list items */
+#reportList li {
+    background-color: var(--light-background-color);
+    border: 1px solid var(--secondary-color);
+    padding: 0.625rem;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover and focus states for list items */
+#reportList li:hover,
+#reportList li:focus {
+    background-color: var(--hover-background-color);
+    outline: none;
+}
+
+/* Active state for list items */
+#reportList li.active {
+    background-color: var(--active-background-color);
+    color: var(--active-text-color);
+}
+
+/* Spacing for user list and user info containers */
+.report-list-container,
+.report-info-container {
+    margin-bottom: 1.25rem;
+}
+
+/* Remove top margin from headings within containers */
+.report-list-container h2,
+.report-info-container h2 {
+    margin-top: 0;
+}
+
+/* Card Component */
+.card {
+    padding: 1.25rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.625rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
+}
+
+.card h2,
+.card p {
+    margin: 0;
+}
+
+.card h2 {
+    color: var(--primary-color);
+}
+
+.card p {
+    margin-bottom: 0.625rem;
+    color: var(--text-color);
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.625rem 0.625rem 0 0;
+    border: 1px solid var(--primary-color);
+}
+
+.card .card-body,
+.card .card-footer {
+    padding: 1.25rem;
+}
+
+.card .card-body p,
+.card .card-footer p {
+    margin-bottom: 0.625rem;
+}
+
+.card .card-footer {
+    padding: 0.625rem;
+    background-color: var(--light-background-color);
+    border-top: 1px solid var(--secondary-color);
+}
+
+.card .card-footer img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.625rem 0.625rem 0 0;
+}
+
+/* Buttons */
+.button {
+    display: inline-block;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 0.3125rem;
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.button:hover,
+.button:focus {
+    background-color: var(--button-hover-color);
+    outline: none;
+}
+
+/* Color Palette */
+:root {
+    --primary-color: #4285F4;
+    --secondary-color: #DADCE0;
+    --background-color: #FFFFFF;
+    --text-color: #202124;
+    --light-background-color: #F1F3F4;
+    --hover-background-color: #E8F0FE;
+    --active-background-color: #1A73E8;
+    --active-text-color: #FFFFFF;
+    --button-text-color: #FFFFFF;
+    --button-hover-color: #3367D6;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        flex: 0 0 100%;
+    }
+
+    .main-content {
+        flex: 0 0 100%;
+    }
+}

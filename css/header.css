@@ -1,6 +1,6 @@
 /* Header styles */
 header {
-    background: linear-gradient(180deg, #28b5e0, #4e5858);
+    background-color: black;
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -35,7 +35,7 @@ header nav.left-nav {
     left: -450px; /* Initially off-screen */
     width: 250px;
     height: 100%;
-    background: #239b9b;
+    background: #0f2644;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -163,7 +163,7 @@ header nav ul li a:hover {
 .user-info {
     display: flex;
     align-items: center;
-    background-color: #004d4d; /* Dark teal color */
+    background-color: #f8f8f8; /* Dark teal color */
     padding: 10px;
     border-radius: 5px;
     width: 100%;
@@ -195,10 +195,30 @@ header nav ul li a:hover {
     right: 0;
     width: 32px;
     height: 100%;
-    background-color: #239b9b;
+    background-color:#0f2644;
     padding: 10px;
     display: flex;
     flex-direction: column;
+}
+
+
+
+/* Dark Mode Button */
+.right-nav .dark-mode-button {
+    background: url('images/night-mode.png') no-repeat center center;
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    margin: 10px;
+    transition: background 0.3s;
+}
+
+.right-nav .dark-mode-button.active {
+    background: url('images/dark-mode.png') no-repeat center center;
+    background-size: cover;
 }
 
 .right-nav ul {

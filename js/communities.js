@@ -111,7 +111,7 @@ function saveCommunityInfo(communityID) {
 function searchCommunities() {
     var input = document.getElementById('searchBar').value.toLowerCase();
     db.collection('communities').get().then(function(querySnapshot) {
-        var communityList = document.getElementById('communityList');
+        var communityList = document.getElementById('list');
         communityList.innerHTML = '';
         querySnapshot.forEach(function(doc) {
             var community = doc.data();
@@ -175,7 +175,7 @@ function hideCreateCommunityPopup() {
 
 function loadCommunities() {
     db.collection('communities').get().then(function(querySnapshot) {
-        var communityList = document.getElementById('communityList');
+        var communityList = document.getElementById('list');
         communityList.innerHTML = '';
         querySnapshot.forEach(function(doc) {
             var community = doc.data();

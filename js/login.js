@@ -1,18 +1,24 @@
 document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    var message = document.getElementById('message');
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
     if (username === 'admin' && password === 'admin123') {
-        message.style.color = 'green';
-        message.textContent = 'Login successful!';
+        // Display the success message
+        const messageElement = document.createElement('div');
+        messageElement.textContent = 'Login Successful...';
+        messageElement.style.color = 'green';
+
+        // Append the message below the login button
+        const form = document.getElementById('loginForm');
+        form.appendChild(messageElement);
+
+        // Redirect after 3 seconds
         setTimeout(function() {
-            window.location.href = 'users.html';
-        }, 1000); // Redirects after 1 second
+            window.location.href = 'users.html'; // Redirect to users.html
+        }, 3000);
     } else {
-        message.style.color = 'red';
-        message.textContent = 'Invalid username or password';
+        alert('Invalid username or password');
     }
 });

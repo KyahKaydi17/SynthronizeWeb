@@ -3,92 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users Dashboard</title>
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/users.css">
+    <title>Admin - Users</title>
+    <!-- Use Bootstrap for styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <!-- Use Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #343a40;
+            min-width: 250px;
+            max-width: 250px;
+            min-height: 100vh;
+        }
+        .sidebar-header {
+            background-color: #212529;
+        }
+        .sidebar-menu .nav-link {
+            padding: 15px;
+            transition: background-color 0.3s;
+        }
+        .sidebar-menu .nav-link:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .top-nav {
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        .list-container, .info-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .list-wrapper {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="menu-toggle">
-            <img src="images/menu.png" alt="Menu">
-        </div>
-        <h1>Synthronize System Administrator</h1>
-        <div class="account-container">
-            <div class="account-button"></div>
-            
-        <nav class="left-nav">
-            <div class="close-btn">
-                <img src="images/menu.png" alt="Close">
+    <div class="wrapper d-flex">
+        <!-- Sidebar navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header p-3">
+                <h3 class="text-white">Synthronize</h3>
             </div>
-            <div class="user-info">
-                <img src="images/user.png" alt="profile">
-                <div class="user-details">
-                    <span class="username">Jeremee Cayde</span>
-                    <span class="role">System Admin</span>
-                </div>
-            </div>
-            <ul>
-                <hr>
-                <li><a href="#reports">Reports</a></li>
-                <li><a href="users.html">Users</a></li>
-                <li><a href="communities.html">Communities</a></li>
-                <li><a href="settings.html">Settings</a></li>
-                <li><a href="login.html">Sign Out</a></li>
+            <ul class="sidebar-menu list-unstyled">
+                <li><a href="#" class="nav-link text-white" aria-label="Users"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="communities.html" class="nav-link text-white" aria-label="Communities"><i class="fas fa-building"></i> Communities</a></li>
+                <li><a href="reports.html" class="nav-link text-white" aria-label="Reports"><i class="fas fa-flag"></i> Reports</a></li>
+                <li><a href="login.html" class="nav-link text-white" aria-label="Log Out"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>
             </ul>
         </nav>
-    </header>
-    <main>
-        <h2>Users Dashboard</h2>
-        <input type="text" id="searchBar" placeholder="Search users..." onkeyup="searchUsers()">
-        <div class="container">
-            <div class="users-container">
-                <h3>Users</h3>
-                <button class="create-user-button" onclick="showCreateUserPopup()">Create New User</button>
-                <ul id="userList">
-                    <!-- Users will be loaded here -->
-                </ul>
-            </div>
-            <div class="user-info-container">
-                <h3>User Information</h3>
-                <div id="userInfo">
-                    <p>Select a user to see their information.</p>
+        
+        <!-- Main content area -->
+        <div class="main-content flex-grow-1">
+            <!-- Top navigation bar -->
+            <nav class="top-nav navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">Contact Support</a></li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Content wrapper -->
+            <div class="content-wrapper container-fluid py-4">
+                <div class="row">
+                    <!-- User list section -->
+                    <div class="col-md-6">
+                        <div class="list-container">
+                          <h2 class="mb-3">Users</h2>
+                          <div class="input-group mb-3">
+                            <input type="text" id="searchBar" class="form-control" placeholder="Search users..." aria-label="Search users">
+                            <button class="btn btn-secondary" onclick="searchUsers()" aria-label="Search"><i class="fas fa-search"></i></button>
+                          </div>
+                          <!-- New container for the list with a max height and overflow-y set to auto -->
+                          <div class="list-wrapper" style="max-height: 300px; overflow-y: auto;">
+                            <ul id="list" class="list-group mt-3">
+                              <!-- User list items will be dynamically added here -->
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    
+                    <!-- User info section -->
+                    <div class="col-md-6">
+                        <div class="info-container">
+                            <h2 class="mb-3">User Info</h2>
+                            <div id="userInfo" class="card">
+                                <!-- User info will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
-    <nav class="right-nav">
-        <ul>
-            <li><img src="images/profile.png" alt="profile" ></li>
-            <li><img src="images/settings.png" alt="settings"></li>
-        </ul>
-    </nav>
-    
-    <!-- Create User Popup -->
-    <div id="createUserPopup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="hideCreateUserPopup()">&times;</span>
-            <h2>Create New User</h2>
-            <input type="email" id="newUserEmail" placeholder="Email" required>
-            <input type="password" id="newUserPassword" placeholder="Password" required>
-            <select id="newUserRole">
-                <option value="System Admin">System Admin</option>
-                <option value="Teacher">Teacher</option>
-                <option value="Moderator">Moderator</option>
-                <option value="Student">Student</option>
-            </select>
-            <button onclick="createNewUser()">Create User</button>
-        </div>
     </div>
-    <!-- Add this to your HTML -->
 
-
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
-    <!-- Your custom script -->
-    <script src="js/users.js"></script>
-    <script src="js/menu-toggle.js"></script>
+    <!-- JavaScript dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="js/users.js" defer></script>
 </body>
 </html>
