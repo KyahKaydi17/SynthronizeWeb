@@ -1,16 +1,15 @@
 /* Color Palette */
 :root {
-    --primary-color: #273749;
-    --secondary-color: #DADCE0;
-    --background-color: #FFFFFF;
-    --text-color: #202124;
-    --light-background-color: #F1F3F4;
-    --hover-background-color: #E8F0FE;
-    --active-background-color: #1A73E8;
-    --active-text-color: #FFFFFF;
-    --button-text-color: #FFFFFF;
-    --button-hover-color: #3367D6;
-    --highlight-color: #FF5722; /* New highlight color for links */
+    --primary-color: #005eb8; /* Workday blue */
+--secondary-color: #f4f5f7; /* Workday light gray */
+--background-color: #f4f5f7; /* Workday background color */
+--text-color: #333333; /* Workday text color */
+--hover-background-color: #e9f0f8; /* Workday hover background color */
+--active-background-color: #005eb8; /* Workday active background color */
+--active-text-color: #ffffff; /* Workday active text color */
+--button-text-color: #ffffff; /* Workday button text color */
+--button-hover-color: #004b87; /* Workday button hover color */
+--highlight-color: #005eb8; /* Workday highlight color */
     --dark-background-color: #121212;
     --dark-text-color: #E0E0E0;
     --dark-primary-color: #BB86FC;

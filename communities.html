@@ -3,119 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Users</title>
-    <!-- Use Bootstrap for styling -->
+    <title>Communities - Admin Panel</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <!-- Use Font Awesome for icons -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Custom CSS -->
     <style>
         body {
-            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
         }
-        .sidebar {
-            background-color: #343a40;
-            min-width: 250px;
-            max-width: 250px;
-            min-height: 100vh;
-        }
-        .sidebar-header {
-            background-color: #212529;
-        }
-        .sidebar-menu .nav-link {
-            padding: 15px;
-            transition: background-color 0.3s;
-        }
-        .sidebar-menu .nav-link:hover {
-            background-color: #495057;
-        }
-        .main-content {
-            padding: 20px;
-        }
+
         .top-nav {
-            box-shadow: 0 4px 2px -2px gray;
-        }
-        .list-container, .info-container {
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
-        .list-wrapper {
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .table-container {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        #searchBar {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 10px;
+            width: 250px;
+        }
+
+        .action-btns i {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
-    <div class="wrapper d-flex">
-        <!-- Sidebar navigation -->
-        <nav class="sidebar">
-            <div class="sidebar-header p-3">
-                <h3 class="text-white">Synthronize</h3>
-            </div>
-            <ul class="sidebar-menu list-unstyled">
-                <li><a href="users.html" class="nav-link text-white" aria-label="Users"><i class="fas fa-users"></i> Users</a></li>
-                <li><a href="communities.html" class="nav-link text-white" aria-label="Communities"><i class="fas fa-building"></i> Communities</a></li>
-                <li><a href="reports.html" class="nav-link text-white" aria-label="Reports"><i class="fas fa-flag"></i> Reports</a></li>
-                <li><a href="login.html" class="nav-link text-white" aria-label="Log Out"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>
-            </ul>
-        </nav>
-        
-        <!-- Main content area -->
-        <div class="main-content flex-grow-1">
-            <!-- Top navigation bar -->
-            <nav class="top-nav navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">Contact Support</a></li>
-                    </ul>
-                </div>
-            </nav>
-            
-            <!-- Content wrapper -->
-            <div class="content-wrapper container-fluid py-4">
-                <div class="row">
-                    <!-- User list section -->
-                    <div class="col-md-6">
-                        <div class="list-container">
-                          <h2 class="mb-3">Communities</h2>
-                          <div class="input-group mb-3">
-                            <input type="text" id="searchBar" class="form-control" placeholder="Search users..." aria-label="Search users">
-                            <button class="btn btn-secondary" onclick="searchUsers()" aria-label="Search"><i class="fas fa-search"></i></button>
-                          </div>
-                          <!-- New container for the list with a max height and overflow-y set to auto -->
-                          <div class="list-wrapper" style="max-height: 300px; overflow-y: auto;">
-                            <ul id="list" class="list-group mt-3">
-                              <!-- User list items will be dynamically added here -->
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    
-                    <!-- User info section -->
-                    <div class="col-md-6">
-                        <div class="info-container">
-                            <h2 class="mb-3">Community Info</h2>
-                            <div id="communityInfo" class="card">
-                                <!-- User info will be dynamically added here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+    <!-- Top navigation bar -->
+    <div class="top-nav">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="h4">Communities</h1>
+            <div>
+                <input type="text" id="searchBar" class="form-control" placeholder="Search Communities..." oninput="searchCommunities()">
             </div>
         </div>
     </div>
 
+    <!-- Main content -->
+    <div class="container">
+        <div class="table-container">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Community Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Members</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="communitiesTableBody">
+                    <!-- Community rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- JavaScript dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    <script src="js/communities.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+    apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
+    authDomain: "synthronize.firebaseapp.com",
+    databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
+    projectId: "synthronize",
+    storageBucket: "synthronize.appspot.com",
+    messagingSenderId: "360481503787",
+    appId: "1:360481503787:web:2ed05b2c6ade021314886e"
+};
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        window.onload = () =>{
+            loadCommunities();
+        }
+
+        const loadCommunities = () => {
+        // Retrieve communities from Firestore and display in table
+        db.collection("communities").get().then(querySnapshot => {
+            const tableBody = document.getElementById('communitiesTableBody');
+            
+            querySnapshot.forEach(doc => {
+                const community = doc.data();
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  
+                        <td>${community.communityName}</td>
+                        <td>${community.communityType}</td>
+                        <td>${community.communityId}</td>
+                        <td>haha</td>
+                        <td class="action-btns">
+                            <i class="fas fa-edit text-primary" onclick="editCommunity('${doc.id}')"></i>
+                            <i class="fas fa-trash-alt text-danger" onclick="deleteCommunity('${doc.id}')"></i>
+                        </td>
+                   
+                `;
+                tableBody.appendChild(row);
+            });
+        }).catch((error) => {
+        console.error("Error getting documents: ", error);
+    });
+
+    }
+
+        // Search function to filter communities
+        function searchCommunities() {
+            const searchInput = document.getElementById('searchBar').value.toLowerCase();
+            const rows = document.querySelectorAll('#communitiesTableBody tr');
+            
+            rows.forEach(row => {
+                const communityName = row.cells[0].textContent.toLowerCase();
+                if (communityName.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Edit community (placeholder function)
+        function editCommunity(id) {
+            alert(`Edit community with ID: ${id}`);
+        }
+
+        // Delete community (placeholder function)
+        function deleteCommunity(id) {
+            alert(`Delete community with ID: ${id}`);
+        }
+    </script>
 </body>
 </html>
