@@ -93,6 +93,24 @@
             font-size: 18px;
             color: #343a40;
         }
+
+        /* Additional styles for insights */
+        .insight-card {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .insight-card h4 {
+            margin: 0;
+        }
+
+        .insight-card span {
+            font-size: 24px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +131,11 @@
             <div class="top-bar-stats">
                 <p>Total Users: <span id="totalUsers">0</span></p>
                 <p>Active Users: <span id="activeUsers">0</span></p>
+            </div>
+            <!-- Insight card for online users -->
+            <div class="insight-card">
+                <h4>Users Online Now:</h4>
+                <span id="onlineUsers">0</span>
             </div>
             <table class="table table-striped table-hover">
                 <thead>
@@ -158,6 +181,7 @@
             db.collection("users").get().then(querySnapshot => {
                 const tableBody = document.getElementById('userTableBody');
                 tableBody.innerHTML = ''; // Clear previous data
+                let activeCount = 0; // To count active users
 
                 querySnapshot.forEach(doc => {
                     const user = doc.data();
@@ -173,10 +197,16 @@
                         </td>
                     `;
                     tableBody.appendChild(row);
+
+                    // Check if the user is online
+                    if (user.currentStatus && user.currentStatus.online) {
+                        activeCount++; // Increment active user count
+                    }
                 });
 
                 document.getElementById('totalUsers').textContent = querySnapshot.size;
-                document.getElementById('activeUsers').textContent = querySnapshot.size;
+                document.getElementById('activeUsers').textContent = activeCount;
+                document.getElementById('onlineUsers').textContent = activeCount; // Show online users
             }).catch((error) => {
                 console.error("Error getting users: ", error);
             });
@@ -229,8 +259,7 @@
                     usernameCell.setAttribute('contenteditable', 'false');
 
                     // Change the icon back to "edit"
-                    editBtn.classList.remove('fa-check');
-                    editBtn.classList.remove('text-success');
+                    editBtn.classList.remove('fa-check', 'text-success');
                     editBtn.classList.add('fa-edit');
                 }).catch((error) => {
                     console.error("Error updating user: ", error);
@@ -239,7 +268,16 @@
         }
 
         function deactivateUser(id) {
-            alert(`Deactivate user with ID: ${id}`);
+            if (confirm('Are you sure you want to deactivate this user?')) {
+                db.collection('users').doc(id).update({ isActive: false })
+                    .then(() => {
+                        alert('User deactivated successfully');
+                        loadUsers(); // Reload users after deactivation
+                    })
+                    .catch((error) => {
+                        console.error("Error deactivating user: ", error);
+                    });
+            }
         }
     </script>
 </body>
