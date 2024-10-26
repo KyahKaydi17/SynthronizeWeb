@@ -16,7 +16,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
         // Redirect after 3 seconds
         setTimeout(function() {
-            window.location.href = 'users.html'; // Redirect to users.html
+            window.location.href = 'index.html'; // Redirect to users.html
         }, 3000);
     } else {
         alert('Invalid username or password');
