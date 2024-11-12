@@ -68,42 +68,6 @@
             background-color: #f2f9ff;
         }
 
-        .btn-action {
-            padding: 10px 20px;
-            font-size: 0.875rem;
-            border-radius: 3px;
-            border: none;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .btn-success {
-            background-image: linear-gradient(to right, #0078d4, #005a8c);
-        }
-
-        .btn-success:hover {
-            background-image: linear-gradient(to right, #005a8c, #004a6e);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background-image: linear-gradient(to right, #e54c4c, #b73232);
-        }
-
-        .btn-danger:hover {
-            background-image: linear-gradient(to right, #b73232, #a62828);
-            transform: translateY(-2px);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-
         .review-status-true {
             color: green;
             font-weight: bold;
@@ -160,6 +124,7 @@
                 <button class="btn btn-info" onclick="filterReports('reviewed')">Reviewed</button>
                 <button class="btn btn-warning" onclick="filterReports('not-reviewed')">Not Reviewed</button>
                 <button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
+                <button class="btn btn-success" onclick="generateExcel()">Export to Excel</button>
             </div>
         </div>
 
@@ -190,6 +155,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
@@ -237,10 +203,15 @@
                         <td class="${report.reviewed ? 'review-status-true' : 'review-status-false'}">${report.reviewed ? 'True' : 'False'}</td>
                         <td>${report.reason}</td>
                         <td>
-                            <div class="btn-group">
-                                <button class="btn btn-success btn-action" onclick="markReviewed('${report.id}', true)">True</button>
-                                <button class="btn btn-danger btn-action" onclick="markReviewed('${report.id}', false)">False</button>
-                                <button class="btn btn-danger btn-action" onclick="deleteReport('${report.id}')">Delete</button>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#" onclick="markReviewed('${report.id}', true)">Mark as True</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="markReviewed('${report.id}', false)">Mark as False</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="deleteReport('${report.id}')">Delete Report</a></li>
+                                </ul>
                             </div>
                         </td>
                     </tr>
@@ -260,6 +231,13 @@
         const searchReports = () => { const searchInput = document.getElementById("searchInput").value.toLowerCase(); filteredReports = reportsData.filter(report => Object.values(report).some(value => value.toString().toLowerCase().includes(searchInput))); currentPage = 1; renderTable(); };
         const filterReports = status => { filteredReports = reportsData.filter(report => status === 'reviewed' ? report.reviewed : !report.reviewed); currentPage = 1; renderTable(); };
         const resetFilters = () => { filteredReports = reportsData; currentPage = 1; renderTable(); };
+
+        const generateExcel = () => {
+            const worksheet = XLSX.utils.json_to_sheet(filteredReports);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
+            XLSX.writeFile(workbook, "Reports.xlsx");
+        };
     </script>
 </body>
 </html>
