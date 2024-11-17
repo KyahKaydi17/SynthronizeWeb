@@ -3,45 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workday-like Interface</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/index.css">
+    <title>HR Management System</title>
+    <!-- CSS Libraries -->
+     <!-- Add to index.html head section -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    
+    <!-- Preload critical assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --sidebar-width: 250px;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: calc(100% - var(--sidebar-width));
+            right: 0;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .navbar-icons i {
+            color: #64748b;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #ffffff;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 1rem;
+        }
+
+        .sidebar-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            padding: 1rem;
+            margin: 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.3s;
+            gap: 0.75rem;
+        }
+
+        .sidebar-menu li a:hover {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu li a i {
+            width: 20px;
+        }
+
+        .content {
+            margin-left: var(--sidebar-width);
+            margin-top: 60px;
+            padding: 2rem;
+            height: calc(100vh - 60px);
+        }
+
+        .content-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+    </style>
 </head>
 <body>
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-light bg-light justify-content-between">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo here -->
-            <span>CompanyName</span>
-        </a>
-     
-        <div class="navbar-icons">
-            <a href="#"><i class="fas fa-bell"></i></a> <!-- Notification Icon -->
-            <a href="#"><i class="fas fa-user-circle"></i></a> <!-- User Profile Icon -->
+    <div class="navbar">
+        <div class="search-bar">
+            <input type="text" placeholder="Search..." class="form-control">
         </div>
-    </nav>
-
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <h3 class="sidebar-title">Menu</h3>
+        <div class="navbar-icons">
+            <i class="fas fa-bell" aria-label="Notifications"></i>
+            <i class="fas fa-envelope" aria-label="Messages"></i>
+            <i class="fas fa-user-circle" aria-label="User Profile"></i>
+            <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <h2 class="sidebar-title">SYNTHRONIZE</h2>
         <ul class="sidebar-menu">
-            <li><a href="welcome.html" target="contentFrame"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="users.html" target="contentFrame"><i class="fas fa-user"></i> Users</a></li>
-            <li><a href="reports.html" target="contentFrame"><i class="fas fa-chart-bar"></i> Reports</a></li>
-            <li><a href="communities.html" target="contentFrame"><i class="fas fa-users"></i> Communities</a></li>
-            <li><a href="archivedPost.html" target="contentFrame"><i class="fas fa-archive"></i> Archived Posts</a></li>
-            <li><a href="contactSupport.html" target="contentFrame"><i class="fas fa-envelope"></i> Contact Support</a></li>
-            <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a></li> <!-- Moved Log Out here -->
+            <li><a href="welcome.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i>Users</a></li>
+            <li><a href="communities.html"><i class="fas fa-building"></i>Communities</a></li>
+            <li><a href="reports.html"><i class="fas fa-clock"></i>Reports</a></li>
+            <li><a href="archivedPost.html"><i class="fas fa-calendar-alt"></i>Archived Post</a></li>
+            <li><a href="contactSupport.html"><i class="fas fa-money-bill-alt"></i>Contact Support</a></li>
+            <li><a href="feedbacks.html"><i class="fas fa-money-bill-alt"></i>Feedbacks</a></li>
+            <li><a href="integrations.html"><i class="fas fa-money-bill-alt"></i>Integrations</a></li>
+            <li></li>
         </ul>
+        
     </div>
 
-    <!-- Main content with iframe -->
     <div class="content">
-        <iframe id="contentFrame" name="contentFrame" src="welcome.html" class="content-frame"></iframe>
+        <iframe id="contentFrame" class="content-frame" src="welcome.html" title="Content Frame"></iframe>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/index.js"></script>
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/index.js" defer></script>
+    <!-- First add Firebase scripts to index.html if not already present -->
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+
+<!-- Replace the existing logout script with this updated version -->
+<script>
+// Firebase config if not already initialized
+const firebaseConfig = {
+    apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
+    authDomain: "synthronize.firebaseapp.com",
+    databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
+    projectId: "synthronize",
+    storageBucket: "synthronize.appspot.com",
+    messagingSenderId: "360481503787",
+    appId: "1:360481503787:web:2ed05b2c6ade021314886e"
+};
+
+
+
+// Initialize Firebase if not already initialized
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// In index.html, update the logout function:
+function logout() {
+    firebase.auth().signOut().then(() => {
+        // Clear any stored session data
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Clear browser history
+        window.history.pushState(null, null, window.location.href);
+        window.history.forward();
+        
+        // Replace current history state to prevent going back
+        window.location.replace('login.html');
+    }).catch((error) => {
+        console.error('Logout Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Logout Failed',
+            text: 'An error occurred during logout. Please try again.',
+        });
+    });
+}
+
+// Prevent access to index.html if not logged in
+firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+        // User is not logged in, redirect to login page
+        window.location.replace('login.html');
+    }
+});
+
+// Prevent browser back button after logout
+window.history.pushState(null, null, window.location.href);
+window.onpopstate = function() {
+    window.history.forward();
+};
+</script>
 </body>
 </html>

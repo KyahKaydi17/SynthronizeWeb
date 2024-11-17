@@ -13,8 +13,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// Show loading spinner
+const showLoadingSpinner = () => {
+    document.getElementById('loadingSpinner').style.display = 'block';
+};
+
+// Hide loading spinner
+const hideLoadingSpinner = () => {
+    document.getElementById('loadingSpinner').style.display = 'none';
+};
+
 // Load all users and user counts on page load
 window.onload = () => {
+    showLoadingSpinner();
     loadUserCounts(); // Load user counts when the page loads
     loadUsers(); // Load user list when the page loads
 };
@@ -37,6 +48,8 @@ const loadUserCounts = () => {
         document.getElementById('activeUsers').innerText = activeUsersCount;
     }).catch((error) => {
         console.error("Error getting user counts: ", error);
+    }).finally(() => {
+        hideLoadingSpinner();
     });
 };
 
@@ -63,6 +76,8 @@ const loadUsers = () => {
         });
     }).catch((error) => {
         console.error("Error getting documents: ", error);
+    }).finally(() => {
+        hideLoadingSpinner();
     });
 };
 

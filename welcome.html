@@ -3,86 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Synthronize</title>
+    <title>Welcome to Synthronize - HR Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #495057;
         }
-        .welcome-section {
-            margin-top: 5rem;
-            text-align: center;
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
         }
+
         .feature-card {
-            transition: transform 0.3s;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
         }
+
         .feature-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem rgba(58, 59, 69, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: #4e73df;
+            margin-bottom: 1rem;
+        }
+
+        .quick-stats {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #4e73df;
+        }
+
+        .stat-label {
+            color: #858796;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .welcome-alert {
+            border-radius: 0.5rem;
+            border: none;
+            background: linear-gradient(45deg, #1cc88a 0%, #20c997 100%);
+            color: white;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: #4e73df;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+        .bg-soft-danger { background-color: rgba(220, 53, 69, 0.1); }
+        .bg-soft-success { background-color: rgba(25, 135, 84, 0.1); }
+        .activity-item:not(:last-child) { border-bottom: 1px solid #eee; }
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #4e73df 0%, #224abe 100%);
+        }
+        .bg-gradient-success {
+            background: linear-gradient(45deg, #1cc88a 0%, #13855c 100%);
+        }
+        .bg-gradient-warning {
+            background: linear-gradient(45deg, #f6c23e 0%, #dda20a 100%);
+        }
+        .bg-gradient-info {
+            background: linear-gradient(45deg, #36b9cc 0%, #258391 100%);
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Synthronize</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Users</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Communities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Reports</a>
-                    </li>
-                </ul>
+   
+    <!-- Header Section -->
+    <header class="dashboard-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-3">Welcome to Synthronize</h1>
+            <p class="lead mb-0">Your Comprehensive Social Media Management Solution</p>
+        </div>
+    </header>
+
+    <div class="container py-4">
+        <!-- Welcome Alert -->
+        <div class="alert welcome-alert mb-4">
+            <i class="fas fa-bell me-2"></i>
+            Welcome back! You have <strong>3</strong> pending reports to review.
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+            <!-- Active Users Card -->
+            <div class="col-md-3">
+                <div class="card h-100 bg-gradient-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title text-white-50">Active Users</h6>
+                                <h3 class="mb-1" id="activeUsersCount">-</h3>
+                                <small id="weeklyChange">Loading...</small>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="fas fa-user-clock fa-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Users Card -->
+            <div class="col-md-3">
+                <div class="card h-100 bg-gradient-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title text-white-50">Total Users</h6>
+                                <h3 class="mb-1" id="totalUsersCount">-</h3>
+                                <small id="totalUsersChange">Loading...</small>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="fas fa-users fa-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Reports Card -->
+            <div class="col-md-3">
+                <div class="card h-100 bg-gradient-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title text-white-50">Reports</h6>
+                                <h3 class="mb-1" id="totalReportsCount">-</h3>
+                                <small id="reportsChange">Loading...</small>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="fas fa-flag fa-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communities Card -->
+            <div class="col-md-3">
+                <div class="card h-100 bg-gradient-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title text-white-50">Communities</h6>
+                                <h3 class="mb-1" id="totalCommunitiesCount">-</h3>
+                                <small id="communitiesChange">Loading...</small>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="fas fa-users-cog fa-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <div class="container welcome-section">
-        <h1>Welcome to the Synthronize Admin Page</h1>
-        <p>This is the main hub for managing users, communities, and generating reports.</p>
+       
+       
 
-        <div class="row mt-5">
+        <!-- Feature Cards -->
+        <div class="row">
             <div class="col-md-4">
-                <div class="card feature-card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Manage Users</h5>
-                        <p class="card-text">Easily add, edit, and deactivate users from your community.</p>
-                        <a href="users.html" class="btn btn-primary">Go to Users</a>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
                     </div>
+                    <h4>User Management</h4>
+                    <p>Manage user accounts, roles, and permissions with our comprehensive user management system.</p>
+                    <a href="users.html" class="btn btn-primary">Manage Users</a>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Community Management</h5>
-                        <p class="card-text">Create and manage communities to enhance engagement.</p>
-                        <a href="communities.html" class="btn btn-primary">Go to Communities</a>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-flag"></i>
                     </div>
+                    <h4>Reports Center</h4>
+                    <p>Review and manage reports, track issues, and maintain system integrity.</p>
+                    <a href="reports.html" class="btn btn-primary">View Reports</a>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card shadow">
-                    <div class="card-body">
-                        <h5 class="card-title">Generate Reports</h5>
-                        <p class="card-text">Access detailed reports to monitor activity and performance.</p>
-                        <a href="reports.html" class="btn btn-primary">Go to Reports</a>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
                     </div>
+                    <h4>Communities</h4>
+                    <p>Foster collaboration and engagement through our community management tools.</p>
+                    <a href="communities.html" class="btn btn-primary">Manage Communities</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
+            authDomain: "synthronize.firebaseapp.com",
+            databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
+            projectId: "synthronize",
+            storageBucket: "synthronize.appspot.com",
+            messagingSenderId: "360481503787",
+            appId: "1:360481503787:web:2ed05b2c6ade021314886e"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Load dashboard statistics
+        window.onload = () => {
+            loadDashboardStats();
+            updateActiveUsers();
+            // Update every minute
+            setInterval(updateActiveUsers, 60000);
+        }
+
+        function loadDashboardStats() {
+            // Get total users
+            db.collection("users").get().then(snapshot => {
+                document.getElementById("totalUsers").textContent = snapshot.size;
+                let activeCount = 0;
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    if (user.currentStatus && user.currentStatus.lastSeen) {
+                        const lastSeenTime = new Date(user.currentStatus.lastSeen.seconds * 1000);
+                        const currentTime = new Date();
+                        const timeDifference = (currentTime - lastSeenTime) / 1000 / 60;
+                        if (timeDifference <= 5) {
+                            activeCount++;
+                        }
+                    }
+                });
+                document.getElementById("activeUsers").textContent = activeCount;
+            });
+
+            // Get total communities
+            db.collection("communities").get().then(snapshot => {
+                document.getElementById("totalCommunities").textContent = snapshot.size;
+            });
+
+            // Get pending reports
+            db.collection("reports").where("reviewed", "==", false).get().then(snapshot => {
+                document.getElementById("pendingReports").textContent = snapshot.size;
+            });
+        }
+
+        // Update the Active Users card value
+        function updateActiveUsers() {
+            db.collection("users").get().then(querySnapshot => {
+                let activeCount = 0;  // Initialize counter for active users
+
+                querySnapshot.forEach(doc => {
+                    const user = doc.data();
+                    
+                    // Check if user has currentStatus and lastSeen timestamp
+                    if (user.currentStatus && user.currentStatus.lastSeen) {
+                        // Convert Firestore timestamp to JavaScript Date
+                        const lastSeenTime = new Date(user.currentStatus.lastSeen.seconds * 1000);
+                        const currentTime = new Date();
+                        
+                        // Calculate time difference in minutes
+                        const timeDifference = (currentTime - lastSeenTime) / 1000 / 60;
+
+                        // Consider user active if seen in last 5 minutes
+                        if (timeDifference <= 5) {
+                            activeCount++;
+                        }
+                    }
+                });
+
+                // Update the UI with active users count
+                document.getElementById('onlineUsers').textContent = activeCount;
+            }).catch(error => {
+                console.error("Error getting active users:", error);
+            });
+        }
+
+        async function updateActiveUsersCard() {
+            try {
+                const now = new Date();
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                
+                const usersRef = db.collection("users");
+                const snapshot = await usersRef.get();
+                
+                let currentActive = 0;
+                let lastWeekActive = 0;
+                
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    if (user.currentStatus && user.currentStatus.lastSeen) {
+                        const lastSeen = new Date(user.currentStatus.lastSeen.seconds * 1000);
+                        const timeDiff = (now - lastSeen) / 1000 / 60;
+                        
+                        // Count currently active (within 5 minutes)
+                        if (timeDiff <= 5) {
+                            currentActive++;
+                        }
+                        
+                        // Count active last week
+                        if (lastSeen >= weekAgo) {
+                            lastWeekActive++;
+                        }
+                    }
+                });
+
+                // Calculate percentage change
+                const percentChange = lastWeekActive ? 
+                    Math.round(((currentActive - lastWeekActive) / lastWeekActive) * 100) : 0;
+                const trend = percentChange >= 0 ? '↑' : '↓';
+
+                // Update UI
+                document.getElementById('activeUsersCount').textContent = currentActive;
+                document.getElementById('weeklyChange').textContent = 
+                    `${trend} ${Math.abs(percentChange)}% from last week`;
+            } catch (error) {
+                console.error("Error updating active users:", error);
+            }
+        }
+
+        // Update initially and every minute
+        updateActiveUsersCard();
+        setInterval(updateActiveUsersCard, 60000);
+
+        async function updateDashboardStats() {
+            try {
+                const now = new Date();
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                
+                // Get all collections data
+                const [usersSnapshot, reportsSnapshot, communitiesSnapshot] = await Promise.all([
+                    db.collection("users").get(),
+                    db.collection("reports").get(),
+                    db.collection("communities").get()
+                ]);
+
+                // Update total users
+                document.getElementById('totalUsersCount').textContent = usersSnapshot.size;
+                
+                // Update total reports
+                document.getElementById('totalReportsCount').textContent = reportsSnapshot.size;
+                
+                // Update total communities
+                document.getElementById('totalCommunitiesCount').textContent = communitiesSnapshot.size;
+
+                // Keep existing active users logic
+                await updateActiveUsersCard();
+
+            } catch (error) {
+                console.error("Error updating dashboard stats:", error);
+            }
+        }
+
+        // Update initially and every 5 minutes
+        updateDashboardStats();
+        setInterval(updateDashboardStats, 300000);
+    </script>
 </body>
 </html>
