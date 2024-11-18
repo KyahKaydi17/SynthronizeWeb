@@ -23,12 +23,34 @@
         :root {
             --primary-color: #2563eb;
             --sidebar-width: 250px;
+            --sidebar-collapsed-width: 0px;
+            --navbar-height: 60px;
+            --transition-speed: 0.3s;
         }
         
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
             background-color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Hamburger Menu */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            position: fixed;
+            left: 1rem;
+            top: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-toggle i {
+            font-size: 1.5rem;
+            color: #64748b;
         }
 
         .navbar {
@@ -43,6 +65,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: width var(--transition-speed);
         }
 
         .navbar-icons {
@@ -65,6 +88,12 @@
             top: 0;
             box-shadow: 2px 0 4px rgba(0,0,0,0.1);
             padding-top: 1rem;
+            transition: transform var(--transition-speed);
+            z-index: 200;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
         }
 
         .sidebar-title {
@@ -102,9 +131,14 @@
 
         .content {
             margin-left: var(--sidebar-width);
-            margin-top: 60px;
+            margin-top: var(--navbar-height);
             padding: 2rem;
-            height: calc(100vh - 60px);
+            height: calc(100vh - var(--navbar-height));
+            transition: margin-left var(--transition-speed);
+        }
+
+        .content.expanded {
+            margin-left: 0;
         }
 
         .content-frame {
@@ -114,15 +148,120 @@
             border-radius: 8px;
             background-color: #ffffff;
         }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            .navbar {
+                width: 100%;
+                left: 0;
+                padding-left: 4rem;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .search-bar {
+                max-width: 200px;
+            }
+
+            .navbar-icons {
+                gap: 1rem;
+            }
+        }
+
+        /* Update these CSS rules */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #ffffff;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            padding-top: 1rem;
+            transition: transform var(--transition-speed);
+            z-index: 200;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .sidebar:not(.collapsed) {
+                transform: translateX(0);
+            }
+        }
+
+        /* Notification Styles */
+        .dropdown-menu {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        #notificationCount {
+            font-size: 0.6rem;
+            padding: 0.25rem 0.4rem;
+        }
+
+        #notificationList .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #dc3545;
+            border-radius: 50%;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+        }
     </style>
 </head>
 <body>
+    <!-- Add Hamburger Menu Button -->
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="navbar">
         <div class="search-bar">
             <input type="text" placeholder="Search..." class="form-control">
         </div>
         <div class="navbar-icons">
-            <i class="fas fa-bell" aria-label="Notifications"></i>
+            <div class="dropdown">
+                <i class="fas fa-bell position-relative" id="notificationBell" data-bs-toggle="dropdown" aria-label="Notifications">
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">
+                        0
+                    </span>
+                </i>
+                <div class="dropdown-menu dropdown-menu-end p-2" style="width: 300px; max-height: 400px; overflow-y: auto;">
+                    <h6 class="dropdown-header">Notifications</h6>
+                    <div id="notificationList"></div>
+                </div>
+            </div>
             <i class="fas fa-envelope" aria-label="Messages"></i>
             <i class="fas fa-user-circle" aria-label="User Profile"></i>
             <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i></a>
@@ -215,6 +354,141 @@ window.history.pushState(null, null, window.location.href);
 window.onpopstate = function() {
     window.history.forward();
 };
+
+// Replace the existing JavaScript with this updated version:
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.getElementById('navToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content');
+    const navbar = document.querySelector('.navbar');
+
+    // Toggle sidebar
+    navToggle.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent event bubbling
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('expanded');
+        navbar.style.width = sidebar.classList.contains('collapsed') ? '100%' : `calc(100% - var(--sidebar-width))`;
+    });
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            const isClickInsideSidebar = sidebar.contains(e.target);
+            const isClickInsideToggle = navToggle.contains(e.target);
+            
+            if (!isClickInsideSidebar && !isClickInsideToggle) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('expanded');
+                navbar.style.width = '100%';
+            }
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('collapsed');
+            content.classList.remove('expanded');
+            navbar.style.width = `calc(100% - var(--sidebar-width))`;
+        } else {
+            sidebar.classList.add('collapsed');
+            content.classList.add('expanded');
+            navbar.style.width = '100%';
+        }
+    });
+
+    // Handle link clicks on mobile
+    const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('expanded');
+                navbar.style.width = '100%';
+            }
+        });
+    });
+    
+    // Initialize notifications
+    initializeNotifications();
+    requestNotificationPermission();
+});
+
+// Add this after your existing Firebase initialization
+let lastNotificationCheck = new Date().getTime();
+
+// Initialize notifications
+function initializeNotifications() {
+    // Listen for new reports
+    db.collection("reports")
+        .orderBy("createdAt", "desc")
+        .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added" && change.doc.data().createdAt?.toMillis() > lastNotificationCheck) {
+                    createNotification('New Report', 'A new report has been submitted', 'reports.html');
+                }
+            });
+        });
+
+    // Listen for new feedbacks
+    db.collection("feedbacks")
+        .orderBy("createdTimestamp", "desc")
+        .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added" && change.doc.data().createdTimestamp?.toMillis() > lastNotificationCheck) {
+                    createNotification('New Feedback', 'A new feedback has been received', 'feedbacks.html');
+                }
+            });
+        });
+}
+
+// Create notification
+function createNotification(title, message, link) {
+    // Update notification count
+    const countElement = document.getElementById('notificationCount');
+    const currentCount = parseInt(countElement.textContent);
+    countElement.textContent = currentCount + 1;
+    countElement.style.display = 'block';
+
+    // Add notification to list
+    const notificationList = document.getElementById('notificationList');
+    const notification = document.createElement('a');
+    notification.className = 'dropdown-item d-flex align-items-center py-2 border-bottom';
+    notification.href = link;
+    notification.innerHTML = `
+        <div class="me-3">
+            <div class="bg-primary text-white rounded-circle p-2">
+                <i class="fas fa-bell"></i>
+            </div>
+        </div>
+        <div>
+            <div class="small text-gray-500">${new Date().toLocaleString()}</div>
+            <span class="font-weight-bold">${title}</span><br>
+            <span class="small text-muted">${message}</span>
+        </div>
+    `;
+
+    notificationList.insertBefore(notification, notificationList.firstChild);
+
+    // Optional: Show browser notification
+    if (Notification.permission === "granted") {
+        new Notification(title, { body: message });
+    }
+}
+
+// Clear notifications when bell is clicked
+document.getElementById('notificationBell').addEventListener('click', () => {
+    document.getElementById('notificationCount').textContent = '0';
+    document.getElementById('notificationCount').style.display = 'none';
+});
+
+// Request notification permission
+function requestNotificationPermission() {
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+}
 </script>
 </body>
 </html>
