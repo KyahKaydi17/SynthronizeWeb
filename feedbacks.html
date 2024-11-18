@@ -338,6 +338,19 @@
             border: 1px solid #dfe1e6;
             resize: vertical;
         }
+        /* Add these styles */
+.assignee img {
+    width: 24px;
+    height: 24px;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(9, 30, 66, 0.08);
+}
+
+#assigneeSelect {
+    font-size: 14px;
+    color: #172b4d;
+    border-color: #dfe1e6;
+}
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 </head>
@@ -464,6 +477,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="field-group">
+                            <div class="field-label">Assignee</div>
+                            <div class="field-value">
+                                <select id="assigneeSelect" class="form-select" onchange="updateAssignee()">
+                                    <option value="">Unassigned</option>
+                                    ${webAdmins.map(admin => `
+                                        <option value="${admin.id}" 
+                                            ${feedback.assigneeId === admin.id ? 'selected' : ''}>
+                                            ${admin.fullName}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -493,7 +520,27 @@
         let currentFeedbackId = null;
         const cardModal = new bootstrap.Modal(document.getElementById('cardDetailModal'));
 
-        window.onload = () => {
+        // Add this to your global variables
+        let webAdmins = [];
+
+        // Add this function to load WebAdmins
+        const loadWebAdmins = async () => {
+            const querySnapshot = await db.collection("users")
+                .where("userType", "==", "WebAdmin")
+                .get();
+            
+            webAdmins = [];
+            querySnapshot.forEach(doc => {
+                webAdmins.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+        };
+
+        // Update window.onload
+        window.onload = async () => {
+            await loadWebAdmins();
             loadFeedbacks();
         };
 
@@ -554,15 +601,19 @@
                 <div class="card-title">
                     ${feedback.feedbackType || 'General Feedback'}
                 </div>
-                <div class="card-labels">
-                    <span class="label ${getStatusClass(feedback)}">
-                        ${getStatusText(feedback)}
-                    </span>
-                </div>
                 <div class="card-meta">
-                    <div class="meta-left">
+                    <div class="meta-left d-flex align-items-center gap-2">
+                        ${feedback.assigneeName ? `
+                            <div class="assignee" title="Assigned to: ${feedback.assigneeName}">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(feedback.assigneeName)}&size=24" 
+                                     class="rounded-circle" 
+                                     alt="${feedback.assigneeName}">
+                            </div>
+                        ` : ''}
                         <span class="timestamp">
-                            ${feedback.createdTimestamp ? new Date(feedback.createdTimestamp.seconds * 1000).toLocaleDateString() : 'No date'}
+                            ${feedback.createdTimestamp ? 
+                                new Date(feedback.createdTimestamp.seconds * 1000).toLocaleDateString() 
+                                : 'No date'}
                         </span>
                     </div>
                     <div class="meta-right">
@@ -600,6 +651,18 @@
             } else {
                 renderComments(feedback.id);
             }
+            
+            // Update assignee select
+            const assigneeSelect = document.getElementById('assigneeSelect');
+            assigneeSelect.innerHTML = `
+                <option value="">Unassigned</option>
+                ${webAdmins.map(admin => `
+                    <option value="${admin.id}" 
+                        ${feedback.assigneeId === admin.id ? 'selected' : ''}>
+                        ${admin.fullName}
+                    </option>
+                `).join('')}
+            `;
             
             cardModal.show();
         };
@@ -747,6 +810,20 @@
                 `;
                 container.appendChild(commentEl);
             });
+        };
+
+        // Add updateAssignee function
+        const updateAssignee = () => {
+            const assigneeId = document.getElementById('assigneeSelect').value;
+            
+            if (!currentFeedbackId) return;
+
+            db.collection("feedbacks").doc(currentFeedbackId).update({
+                assigneeId: assigneeId,
+                assigneeName: assigneeId ? webAdmins.find(a => a.id === assigneeId).fullName : null
+            }).then(() => {
+                loadFeedbacks();
+            }).catch(error => console.error("Error updating assignee:", error));
         };
     </script>
 </body>
