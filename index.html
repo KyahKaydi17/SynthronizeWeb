@@ -81,7 +81,7 @@
 
         .sidebar {
             width: var(--sidebar-width);
-            background-color: #ffffff;
+            background: linear-gradient(to bottom, #ffffff, #f8fafc);
             height: 100vh;
             position: fixed;
             left: 0;
@@ -90,6 +90,8 @@
             padding-top: 1rem;
             transition: transform var(--transition-speed);
             z-index: 200;
+            overflow-y: auto;
+            scrollbar-width: thin;
         }
 
         .sidebar.collapsed {
@@ -99,34 +101,65 @@
         .sidebar-title {
             color: var(--primary-color);
             font-size: 1.5rem;
-            padding: 1rem;
+            padding: 1.5rem;
             margin: 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .sidebar-menu {
             list-style: none;
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             margin: 0;
+        }
+
+        .menu-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            padding: 1.25rem 1.5rem 0.5rem;
+            font-weight: 500;
         }
 
         .sidebar-menu li a {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
-            color: #64748b;
+            padding: 0.8rem 1.5rem;
+            color: #475569;
             text-decoration: none;
             transition: all 0.3s;
             gap: 0.75rem;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
         }
 
         .sidebar-menu li a:hover {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            padding-left: 1.75rem;
+        }
+
+        .sidebar-menu li a.active {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            font-weight: 500;
         }
 
         .sidebar-menu li a i {
             width: 20px;
+            font-size: 1.1rem;
+            margin-right: 0.75rem;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-menu li a:hover i,
+        .sidebar-menu li a.active i {
+            color: var(--primary-color);
         }
 
         .content {
@@ -238,6 +271,20 @@
             top: -2px;
             right: -2px;
         }
+
+        /* Scrollbar styling */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -263,7 +310,7 @@
                 </div>
             </div>
             <i class="fas fa-envelope" aria-label="Messages"></i>
-            <i class="fas fa-user-circle" aria-label="User Profile"></i>
+            <a href="profile.html" onclick="profile()">  <i class="fas fa-user-circle" aria-label="User Profile"></i></a>
             <a href="login.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
@@ -339,6 +386,35 @@ function logout() {
             text: 'An error occurred during logout. Please try again.',
         });
     });
+}
+
+function profile() {
+    // Debug log
+    console.log('Profile function called');
+
+    // Get the iframe element
+    const contentFrame = document.getElementById('contentFrame');
+    
+    // Verify iframe exists
+    if (!contentFrame) {
+        console.error('iframe with id "contentFrame" not found');
+        return;
+    }
+    
+    console.log('Found iframe:', contentFrame);
+
+    try {
+        // Set src to profile.html with absolute path
+        contentFrame.src = './profile.html';
+        console.log('Set iframe src to:', contentFrame.src);
+        
+        // Update navigation states
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+        document.querySelector('[onclick="profile()"]').classList.add('active');
+    } catch (error) {
+        console.error('Error in profile():', error);
+    }
 }
 
 // Prevent access to index.html if not logged in

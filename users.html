@@ -345,6 +345,14 @@
                         <td class="action-btns">
                             <i class="fas fa-edit text-primary" onclick="editUser('${doc.id}', this)"></i>
                             <i class="fas fa-trash-alt text-danger" onclick="deactivateUser('${doc.id}')"></i>
+                            <!-- Add this button where your other action buttons are -->
+                            <button class="btn btn-warning btn-sm" onclick="openBanDialog('${doc.id}')">
+                                <i class="fas fa-ban"></i> Ban
+                            </button>
+                            <!-- Add this button next to ban button in your UI -->
+                            <button class="btn btn-success btn-sm" onclick="unbanUser('${user.id}')">
+                                <i class="fas fa-user-check"></i> Unban
+                            </button>
                         </td>
                     `;
                     tableBody.appendChild(row);
@@ -488,6 +496,54 @@
             XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
             XLSX.writeFile(workbook, "Users.xlsx");
         }
+
+        let selectedUserId = null;
+
+        function openBanDialog(userId) {
+            selectedUserId = userId;
+            const modal = new bootstrap.Modal(document.getElementById('banUserModal'));
+            modal.show();
+        }
+
+        function confirmBanUser() {
+    const banUntilDate = document.getElementById('banUntilDate').value;
+    if (!banUntilDate) {
+        alert('Please select a date');
+        return;
+    }
+
+    // Format date to mm/dd/yyyy
+    const date = new Date(banUntilDate);
+    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+
+    // Update user access - storing date in the "Disabled" field
+    firebase.firestore().collection('users').doc(selectedUserId).update({
+        userAccess: {
+            Disabled: formattedDate
+        }
+    }).then(() => {
+        bootstrap.Modal.getInstance(document.getElementById('banUserModal')).hide();
+        alert('User banned successfully');
+        // Refresh user list or update UI
+    }).catch(error => {
+        console.error('Error banning user:', error);
+        alert('Error banning user');
+    });
+}
+
+function unbanUser(userId) {
+    firebase.firestore().collection('users').doc(selectedUserId).update({
+        userAccess: {
+            Disabled: ""
+        }
+    }).then(() => {
+        alert('User unbanned successfully');
+        // Refresh user list or update UI
+    }).catch(error => {
+        console.error('Error unbanning user:', error);
+        alert('Error unbanning user');
+    });
+}
     </script>
 
 <!-- Edit User Modal -->
@@ -525,6 +581,28 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Add this modal HTML before the closing body tag -->
+<div class="modal fade" id="banUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ban User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="banUntilDate">Ban Until Date:</label>
+          <input type="date" class="form-control" id="banUntilDate">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="confirmBanUser()">Ban User</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>
