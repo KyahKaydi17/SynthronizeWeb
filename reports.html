@@ -11,6 +11,9 @@
         /* Base styles */
         :root {
             --spacing-unit: clamp(0.5rem, 1vw, 1rem);
+            --card-padding: clamp(0.75rem, 2vw, 1rem);
+            --font-size-base: clamp(14px, 1vw + 0.25rem, 16px);
+            --font-size-large: clamp(18px, 1.5vw + 0.5rem, 24px);
         }
 
         body {
@@ -23,7 +26,8 @@
         /* Responsive container */
         .container-fluid {
             padding: var(--spacing-unit);
-            max-width: 100%;
+            margin: 0 auto;
+            width: min(100% - 2rem, 1400px);
         }
 
         /* Sprint header */
@@ -38,36 +42,46 @@
         /* Board layout */
         .board-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-            gap: var(--spacing-unit);
-            padding: var(--spacing-unit);
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: clamp(0.5rem, 2vw, 1.5rem);
+            padding: 0;
+            margin-top: var(--spacing-unit);
             overflow-x: auto;
         }
 
         /* Column styles */
         .board-column {
             background: #f4f5f7;
-            border-radius: 8px;
-            min-width: min(300px, 100%);
-            height: calc(100vh - clamp(180px, 30vh, 250px));
+            border-radius: clamp(4px, 1vw, 8px);
+            min-width: 280px;
+            height: min(calc(100vh - 180px), 800px);
             overflow-y: auto;
-            padding: var(--spacing-unit);
+            padding: var(--card-padding);
         }
 
         /* Card styles */
         .jira-card {
             background: white;
             border-radius: 3px;
-            padding: clamp(0.5rem, 1.5vw, 0.75rem);
-            margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
+            padding: var(--card-padding);
+            margin-bottom: var(--card-padding);
             box-shadow: 0 1px 2px rgba(9, 30, 66, 0.25);
             border: 2px solid transparent;
             cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .jira-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15);
+            }
         }
 
         .card-title {
-            font-size: clamp(0.875rem, 1.2vw, 1rem);
+            font-size: var(--font-size-base);
             line-height: 1.4;
+            margin-bottom: 0.5rem;
         }
 
         /* Modal styles */
@@ -111,8 +125,8 @@
 
         /* Status badges */
         .status-badge {
-            padding: clamp(0.2rem, 0.5vw, 0.25rem) clamp(0.5rem, 1vw, 0.75rem);
-            font-size: clamp(0.7rem, 0.8vw, 0.75rem);
+            padding: clamp(0.25rem, 0.5vw, 0.5rem) clamp(0.5rem, 1vw, 1rem);
+            font-size: clamp(0.75rem, 0.8vw, 0.875rem);
         }
 
         /* Card meta elements */
@@ -156,6 +170,7 @@
             .board-column {
                 page-break-inside: avoid;
                 height: auto;
+                margin-bottom: 2rem;
             }
         }
 
@@ -294,13 +309,155 @@
         .transition-button:hover {
             background: #f4f5f7;
         }
+
+        /* Improved modal responsiveness */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+            
+            .modal-body {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .content-main,
+            .content-side {
+                width: 100%;
+                padding: var(--card-padding);
+            }
+            
+            .content-side {
+                border-top: 1px solid #dfe1e6;
+                border-right: none;
+            }
+        
+            .issue-title {
+                font-size: var(--font-size-large);
+            }
+        }
+        
+        /* Touch-optimized controls */
+        @media (pointer: coarse) {
+            .transition-button {
+                padding: 12px 16px;
+                min-height: 44px;
+            }
+            
+            .btn-close {
+                padding: 1rem;
+            }
+            
+            .card-meta > * {
+                min-height: 32px;
+            }
+        }
+        
+        /* Improved typography scaling */
+        .card-title {
+            font-size: var(--font-size-base);
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .column-header {
+            font-size: clamp(0.875rem, 1vw + 0.25rem, 1rem);
+            margin-bottom: var(--spacing-unit);
+        }
+        
+        /* Enhanced modal breakpoints */
+        @media (min-width: 769px) {
+            .modal-dialog {
+                width: min(95%, 1140px);
+            }
+        }
+        
+        /* Safe area insets for modern mobile devices */
+        @supports (padding: max(0px)) {
+            .container-fluid {
+                padding-left: max(var(--spacing-unit), env(safe-area-inset-left));
+                padding-right: max(var(--spacing-unit), env(safe-area-inset-right));
+            }
+        }
+
+        /* Card styles */
+        .jira-card {
+            background: white;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .jira-card:hover {
+            background-color: #f4f5f7;
+            border-color: #c1c7d0;
+            box-shadow: 0 1px 3px rgba(9, 30, 66, 0.13);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-key {
+            font-size: 12px;
+            color: #5e6c84;
+            font-weight: 500;
+        }
+
+        .status-icon {
+            margin-right: 8px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #5e6c84;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-reviewed {
+            background-color: #e3fcef;
+            color: #006644;
+        }
+
+        .status-pending {
+            background-color: #deebff;
+            color: #0747a6;
+        }
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container-fluid py-4">
         <div class="sprint-header">
-            <h1 class="h3 mb-0">Reports Board</h1>
-            <p class="mb-0">Manage and track report statuses</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">Reports Management</h1>
+                <div>
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#createReportModal">
+                        <i class="fas fa-plus me-2"></i>Create Report
+                    </button>
+                    <button class="btn btn-light" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel me-2"></i>Export to Excel
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="board-container">
@@ -376,12 +533,23 @@
                                 <i class="fas fa-check text-success me-2"></i>
                                 Mark as Reviewed
                             </button>
+                            <button class="transition-button" onclick="markUnderReview(currentReportId, true)">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Mark as Under Review
+                            </button>
                             <button class="transition-button" onclick="markReviewed(currentReportId, false)">
                                 <i class="fas fa-times text-warning me-2"></i>
                                 Mark as Not Reviewed
                             </button>
                         </div>
-
+                        <div class="field-group">
+                            <div class="field-label">Assignee</div>
+                            <div class="field-value">
+                                <select id="modalAssignee" class="form-select" onchange="updateAssignee()">
+                                    <option value="">Select Assignee</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="field-group">
                             <div class="field-label">Details</div>
                             <div class="field-value">
@@ -461,17 +629,34 @@
             const div = document.createElement('div');
             div.className = 'jira-card';
             div.innerHTML = `
-                <div class="epic-label">Report</div>
-                <div class="card-key">RPT-${report.id.slice(0,4)}</div>
-                <div class="card-title">${report.reportType || 'Untitled Report'}</div>
-                <div class="card-labels">
-                    <span class="label ${report.reviewed ? 'label-feature' : 'label-bug'}">
-                        ${report.reviewed ? 'Reviewed' : 'Not Reviewed'}
-                    </span>
+                <div class="card-header d-flex align-items-center gap-2">
+                    <div class="status-icon">
+                        ${getStatusIcon(report)}
+                    </div>
+                    <div class="card-key">RPT-${report.id.slice(0,4)}</div>
+                    <div class="ms-auto">
+                        ${report.comments?.length ? 
+                            `<i class="far fa-comment-dots text-muted" title="${report.comments.length} comments"></i>` 
+                            : ''}
+                    </div>
+                </div>
+                <div class="card-title">
+                    ${report.reportType || 'General Report'}
                 </div>
                 <div class="card-meta">
-                    <div class="meta-left">
-                        <span class="reported-id">ID: ${report.reportedId || 'Unknown'}</span>
+                    <div class="meta-left d-flex align-items-center gap-2">
+                        ${report.assigneeName ? `
+                            <div class="assignee" title="Assigned to: ${report.assigneeName}">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(report.assigneeName)}&size=24" 
+                                     class="rounded-circle" 
+                                     alt="${report.assigneeName}">
+                            </div>
+                        ` : ''}
+                        <span class="timestamp">
+                            ${report.createdTimestamp ? 
+                                new Date(report.createdTimestamp.seconds * 1000).toLocaleDateString() 
+                                : 'No date'}
+                        </span>
                     </div>
                     <div class="meta-right">
                         <i class="fas fa-flag priority-flag ${report.reviewed ? 'medium' : 'high'}"></i>
@@ -481,6 +666,12 @@
 
             div.addEventListener('click', () => showCardDetail(report));
             return div;
+        };
+
+        const getStatusIcon = (report) => {
+            if (report.reviewed) return '<i class="fas fa-check-circle text-success"></i>';
+            if (report.underReview) return '<i class="fas fa-sync-alt fa-spin text-info"></i>';
+            return '<i class="fas fa-exclamation-circle text-warning"></i>';
         };
 
         const showCardDetail = (report) => {
@@ -496,6 +687,14 @@
                 </span>
             `;
             
+            // Load WebAdmins and set current assignee
+            loadWebAdmins().then(() => {
+                const assigneeSelect = document.getElementById('modalAssignee');
+                if (report.assigneeId) {
+                    assigneeSelect.value = report.assigneeId;
+                }
+            });
+            
             cardModal.show();
         };
 
@@ -508,6 +707,81 @@
                 cardModal.hide();
             })
             .catch(error => console.error("Error updating review status:", error));
+        };
+
+        const markUnderReview = (id, underReview) => {
+    if (!id) return;
+    
+    // Update both reviewed and underReview fields
+    db.collection("reports").doc(id).update({ 
+        reviewed: true,  // Mark as reviewed
+        underReview: true // Mark as under review
+    })
+    .then(() => {
+        loadReports();
+        cardModal.hide();
+    })
+    .catch(error => console.error("Error updating review status:", error));
+};
+
+        const exportToExcel = () => {
+            // Format data for Excel
+            const excelData = reportsData.map(report => ({
+                'Report ID': report.id,
+                'Reported ID': report.reportedId || 'Unknown',
+                'Report Type': report.reportType || 'Unknown',
+                'Reason': report.reason || 'No reason provided',
+                'Status': report.reviewed ? 'Reviewed' : 'Not Reviewed',
+                'Created Date': report.createdAt ? new Date(report.createdAt.seconds * 1000).toLocaleString() : 'Unknown',
+                'Under Review': report.underReview ? 'Yes' : 'No'
+            }));
+
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Reports');
+
+            // Generate Excel file
+            const fileName = `Reports_Export_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        };
+
+        // Add this new function after firebaseConfig initialization
+        const loadWebAdmins = () => {
+            return db.collection("users")
+                .where("userType", "==", "WebAdmin")
+                .get()
+                .then(querySnapshot => {
+                    const assigneeSelect = document.getElementById('modalAssignee');
+                    assigneeSelect.innerHTML = '<option value="">Select Assignee</option>';
+                    
+                    querySnapshot.forEach(doc => {
+                        const admin = doc.data();
+                        const option = document.createElement('option');
+                        option.value = doc.id;
+                        option.textContent = admin.fullName;
+                        assigneeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error loading admins:", error));
+        };
+
+        // Add function to update assignee
+        const updateAssignee = () => {
+            const assigneeId = document.getElementById('modalAssignee').value;
+            
+            if (!currentReportId) return;
+            
+            db.collection("reports").doc(currentReportId).update({
+                assigneeId: assigneeId
+            })
+            .then(() => {
+                loadReports();
+                // Don't hide modal, just update the view
+            })
+            .catch(error => console.error("Error updating assignee:", error));
         };
     </script>
 </body>

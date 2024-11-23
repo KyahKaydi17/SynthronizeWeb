@@ -209,6 +209,178 @@
             padding-right: 10px;
             padding-left: 10px;
         }
+
+        /* JIRA Theme Colors */
+:root {
+    --jira-blue: #0052CC;
+    --jira-blue-light: #4C9AFF;
+    --jira-bg: #F4F5F7;
+    --jira-text: #172B4D;
+    --jira-text-subtle: #5E6C84;
+    --jira-border: #DFE1E6;
+    --jira-green: #36B37E;
+    --jira-red: #FF5630;
+    --jira-yellow: #FFAB00;
+}
+
+body {
+    background-color: var(--jira-bg);
+    color: var(--jira-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+}
+
+/* JIRA-style Header */
+.dashboard-header {
+    background: var(--jira-blue);
+    color: white;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 3px;
+    box-shadow: none;
+}
+
+/* JIRA-style Table/List View */
+.table-container {
+    background: white;
+    border-radius: 3px;
+    border: 1px solid var(--jira-border);
+    box-shadow: 0 1px 1px rgba(9, 30, 66, 0.13);
+    padding: 0;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: var(--jira-bg);
+    color: var(--jira-text-subtle);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-bottom: 2px solid var(--jira-border);
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--jira-border);
+    color: var(--jira-text);
+}
+
+/* JIRA-style Row Hover */
+.table tbody tr:hover {
+    background-color: #F4F5F7;
+}
+
+/* JIRA-style Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-active {
+    background-color: #E3FCEF;
+    color: #006644;
+}
+
+.status-inactive {
+    background-color: #FFEBE6;
+    color: #BF2600;
+}
+
+/* JIRA-style Search and Filters */
+.filter-section {
+    background: white;
+    border: 1px solid var(--jira-border);
+    border-radius: 3px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.search-box input {
+    border: 2px solid var(--jira-border);
+    border-radius: 3px;
+    padding: 8px 12px 8px 32px;
+    font-size: 14px;
+}
+
+/* JIRA-style Modals */
+.modal-content {
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
+}
+
+.modal-header {
+    background: var(--jira-blue);
+    color: white;
+    padding: 16px 24px;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* JIRA-style Buttons */
+.btn-primary {
+    background: var(--jira-blue);
+    border-color: var(--jira-blue);
+}
+
+.btn-primary:hover {
+    background: var(--jira-blue-light);
+    border-color: var(--jira-blue-light);
+}
+
+/* JIRA-style Action Icons */
+.action-btns i {
+    padding: 6px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.action-btns i:hover {
+    background-color: var(--jira-bg);
+}
+
+/* JIRA-style Form Controls */
+.form-control, .form-select {
+    border: 2px solid var(--jira-border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    color: var(--jira-text);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--jira-blue-light);
+    box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
+}
+
+/* JIRA-style List View Row */
+.list-view-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--jira-border);
+    transition: background-color 0.2s;
+}
+
+.list-view-row:hover {
+    background-color: var(--jira-bg);
+}
+
+/* User Avatar in List */
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
     </style>
 </head>
 <body>
@@ -219,14 +391,18 @@
                     <h1 class="h3 mb-0">User Management Dashboard</h1>
                     <p class="mb-0">Manage and monitor user accounts</p>
                 </div>
+                
                 <div class="col-auto">
+                    <button class="btn btn-light me-2" onclick="showRoleRequests()">
+                        <i class="fas fa-user-tag me-2"></i>View Role Requests
+                    </button>
                     <button class="btn btn-light" onclick="exportToExcel()">
                         <i class="fas fa-download me-2"></i>Export to Excel
                     </button>
                 </div>
             </div>
         </div>
-
+        
        
 
         <div class="row">
@@ -252,37 +428,49 @@
                 </div>
 
                 <div class="table-container table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Full Name</th>
-                                <th>Role</th>
-                                <th>Username</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTableBody"></tbody>
-                    </table>
-                </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 300px">User</th>
+                <th>User ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+    </table>
+</div>
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="table-container table-responsive">
-                    <h5 class="mb-4">Role Change Requests</h5>
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Request ID</th>
-                                <th>User ID</th>
-                                <th>Requested Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="requestTableBody"></tbody>
-                    </table>
+       
+
+        <!-- Add this button after the user table -->
+        
+
+        <!-- Add this modal for role requests -->
+        <div class="modal fade" id="roleRequestsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Role Change Requests</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>User ID</th>
+                                        <th>Requested Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roleRequestsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -315,55 +503,79 @@
         }
 
         const loadUsers = () => {
-            db.collection("users").get().then(querySnapshot => {
-                const tableBody = document.getElementById('userTableBody');
-                tableBody.innerHTML = '';
-                let activeCount = 0;
+    db.collection("users").get().then(querySnapshot => {
+        const tableBody = document.getElementById('userTableBody');
+        tableBody.innerHTML = '';
+        let activeCount = 0;
 
-                querySnapshot.forEach(doc => {
-                    const user = doc.data();
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${doc.id}</td>
-                        <td>${user.fullName}</td>
-                        <td>${user.userType}</td>
-                        <td>${user.username}</td>
-                        <td class="action-btns">
-                            <i class="fas fa-edit text-primary" onclick="editUser('${doc.id}', this)"></i>
-                            <i class="fas fa-trash-alt text-danger" onclick="deactivateUser('${doc.id}')"></i>
-                            <!-- Add this button where your other action buttons are -->
-                            <button class="btn btn-warning btn-sm" onclick="openBanDialog('${doc.id}')">
-                                <i class="fas fa-ban"></i> Ban
-                            </button>
-                            <!-- Add this button next to ban button in your UI -->
-                            <button class="btn btn-success btn-sm" onclick="unbanUser('${user.id}')">
-                                <i class="fas fa-user-check"></i> Unban
-                            </button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
+        querySnapshot.forEach(doc => {
+            const user = doc.data();
+            const row = document.createElement('tr');
+            
+            // Check if user is banned/disabled
+            const isDisabled = user.userAccess?.Disabled;
+            const statusClass = isDisabled ? 'status-inactive' : 'status-active';
+            const statusText = isDisabled ? 'Disabled' : 'Active';
+            
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&size=32" 
+                             class="user-avatar" alt="${user.fullName}">
+                        <div>
+                            <div style="font-weight: 500; color: var(--jira-text);">${user.fullName}</div>
+                            <div style="font-size: 12px; color: var(--jira-text-subtle);">${user.username}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span style="font-size: 12px; color: var(--jira-text-subtle);">${doc.id}</span>
+                </td>
+                <td>
+                    <span class="status-badge ${statusClass}">
+                        ${statusText}
+                    </span>
+                </td>
+                <td class="action-btns">
+                    <i class="fas fa-edit" onclick="editUser('${doc.id}')" 
+                       style="color: var(--jira-blue)" title="Edit User"></i>
+                    <i class="fas fa-ban" onclick="openBanDialog('${doc.id}')" 
+                       style="color: var(--jira-yellow)" title="Ban User"></i>
+                    <i class="fas fa-user-check" onclick="unbanUser('${doc.id}')" 
+                       style="color: var(--jira-green)" title="Unban User"></i>
+                    <i class="fas fa-trash-alt" onclick="deactivateUser('${doc.id}')" 
+                       style="color: var(--jira-red)" title="Deactivate User"></i>
+                </td>
+            `;
+            tableBody.appendChild(row);
 
-                    if (user.currentStatus && user.currentStatus.lastSeen) {
-                        const lastSeenTime = new Date(user.currentStatus.lastSeen.seconds * 1000);
-                        const currentTime = new Date();
-                        const timeDifference = (currentTime - lastSeenTime) / 1000 / 60; // difference in minutes
+            if (user.currentStatus?.lastSeen) {
+                const lastSeenTime = new Date(user.currentStatus.lastSeen.seconds * 1000);
+                const currentTime = new Date();
+                const timeDifference = (currentTime - lastSeenTime) / 1000 / 60;
+                if (timeDifference <= 5) activeCount++;
+            }
+        });
 
-                        if (timeDifference <= 5) {
-                            activeCount++;
-                        }
-                    }
-                });
-
-                document.getElementById('onlineUsers').textContent = activeCount;
-            }).catch((error) => {
-                console.error("Error getting users: ", error);
-            });
-        }
+        document.getElementById('onlineUsers').textContent = activeCount;
+    }).catch((error) => {
+        console.error("Error getting users: ", error);
+    });
+}
 
         const loadRoleChangeRequests = () => {
     db.collection("account_type_requests").get().then(querySnapshot => {
-        const requestTableBody = document.getElementById('requestTableBody');
+        const requestTableBody = document.getElementById('roleRequestsTableBody');
         requestTableBody.innerHTML = '';
+
+        if (querySnapshot.empty) {
+            requestTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center">No pending role change requests</td>
+                </tr>
+            `;
+            return;
+        }
 
         querySnapshot.forEach(doc => {
             const request = doc.data();
@@ -373,8 +585,14 @@
                 <td>${request.userId}</td>
                 <td>${request.reqAccType}</td>
                 <td>
-                    <button class="btn btn-success btn-sm" onclick="approveRequest('${doc.id}', '${request.userId}', '${request.reqAccType}')">Approve</button>
-                    <button class="btn btn-danger btn-sm" onclick="rejectRequest('${doc.id}')">Reject</button>
+                    <i class="fas fa-check-circle text-success me-2" 
+                       onclick="approveRequest('${doc.id}', '${request.userId}', '${request.reqAccType}')"
+                       style="cursor: pointer;" 
+                       title="Approve Request"></i>
+                    <i class="fas fa-times-circle text-danger" 
+                       onclick="rejectRequest('${doc.id}')"
+                       style="cursor: pointer;" 
+                       title="Reject Request"></i>
                 </td>
             `;
             requestTableBody.appendChild(row);
@@ -396,7 +614,6 @@
                 return db.collection("roleChangeRequests").doc(requestId).delete();
             }).then(() => {
                 alert('Role change approved!');
-                loadUsers();
                 loadRoleChangeRequests();
             }).catch((error) => {
                 console.error("Error approving request: ", error);
@@ -529,6 +746,12 @@ function unbanUser(userId) {
         console.error('Error unbanning user:', error);
         alert('Error unbanning user');
     });
+}
+
+// Add this function to show the modal and load requests
+function showRoleRequests() {
+    loadRoleChangeRequests();
+    new bootstrap.Modal(document.getElementById('roleRequestsModal')).show();
 }
     </script>
 

@@ -340,6 +340,113 @@
             resize: vertical;
         }
         
+        /* Add these styles to your existing CSS */
+
+        /* JIRA-style Card */
+        .jira-card {
+            background: white;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .jira-card:hover {
+            background-color: #f4f5f7;
+            border-color: #c1c7d0;
+            box-shadow: 0 1px 3px rgba(9, 30, 66, 0.13);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-key {
+            font-size: 12px;
+            color: #5e6c84;
+            font-weight: 500;
+        }
+
+        /* Priority Flags */
+        .priority-flag {
+            font-size: 12px;
+        }
+
+        .priority-flag.highest { color: #cd1317; }
+        .priority-flag.high { color: #e94949; }
+        .priority-flag.medium { color: #e97f33; }
+        .priority-flag.low { color: #2d8738; }
+        .priority-flag.lowest { color: #57a55a; }
+
+        /* Status Labels */
+        .status-badge {
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-reviewed {
+            background-color: #e3fcef;
+            color: #006644;
+        }
+
+        .status-pending {
+            background-color: #deebff;
+            color: #0747a6;
+        }
+
+        /* Board Column Headers */
+        .column-header {
+            padding: 12px;
+            background: #f4f5f7;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5e6c84;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-count {
+            background: #e3e9f3;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        /* Search and Filter Bar */
+        .board-toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(9, 30, 66, 0.13);
+        }
+
+        .search-input {
+            border: 2px solid #dfe1e6;
+            border-radius: 3px;
+            padding: 8px 12px;
+            width: 300px;
+        }
+
+        .filter-dropdown {
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            padding: 8px;
+            background: white;
+        }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 </head>
@@ -348,10 +455,15 @@
         <div class="sprint-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 mb-0">Feedback Management</h1>
-                <button class="btn btn-light" onclick="exportToExcel()">
-                    <i class="fas fa-file-excel me-2"></i>Export to Excel
-                </button>
-            </div>y
+                <div>
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#createFeedbackModal">
+                        <i class="fas fa-plus me-2"></i>Create Feedback
+                    </button>
+                    <button class="btn btn-light" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel me-2"></i>Export to Excel
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="board-container">
@@ -485,6 +597,65 @@
             </div>
         </div>
     </div>
+    
+    <!-- Create Feedback Modal -->
+    <div class="modal fade" id="createFeedbackModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <div class="issue-type-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div>Create New Feedback</div>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="content-main">
+                        <div class="field-group">
+                            <div class="field-label">Feedback Type</div>
+                            <select id="newFeedbackType" class="form-select">
+                                <option value="Bug Report">Bug Report</option>
+                                <option value="Feature Request">Feature Request</option>
+                                <option value="Improvement">Improvement</option>
+                                <option value="General Feedback">General Feedback</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="field-label">Feedback Message</div>
+                            <textarea id="newFeedbackMessage" class="form-control" rows="5" required></textarea>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="field-label">Priority</div>
+                            <select id="newFeedbackPriority" class="form-select">
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="content-side">
+                        <div class="field-group">
+                            <div class="field-label">Assignee</div>
+                            <select id="newFeedbackAssignee" class="form-select">
+                                <option value="">Unassigned</option>
+                            </select>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-primary w-100" onclick="createNewFeedback()">
+                                <i class="fas fa-save me-2"></i>Create Feedback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
@@ -526,6 +697,15 @@
                     ...doc.data()
                 });
             });
+
+            // Populate assignee dropdowns
+            const createAssigneeSelect = document.getElementById('newFeedbackAssignee');
+            createAssigneeSelect.innerHTML = `
+                <option value="">Unassigned</option>
+                ${webAdmins.map(admin => `
+                    <option value="${admin.id}">${admin.fullName}</option>
+                `).join('')}
+            `;
         };
 
         // Update window.onload
@@ -840,6 +1020,64 @@
     } catch (error) {
         console.error("Error:", error);
         alert("Error updating assignee");
+    }
+};
+
+// Add this after your existing JavaScript code
+const createNewFeedback = async () => {
+    const feedbackType = document.getElementById('newFeedbackType').value;
+    const feedbackMessage = document.getElementById('newFeedbackMessage').value;
+    const priority = document.getElementById('newFeedbackPriority').value;
+    const assigneeId = document.getElementById('newFeedbackAssignee').value;
+
+    if (!feedbackMessage.trim()) {
+        alert('Please enter a feedback message');
+        return;
+    }
+
+    try {
+        const assignee = webAdmins.find(a => a.id === assigneeId);
+        
+        const newFeedback = {
+            feedbackType,
+            feedbackMessage,
+            priority,
+            assigneeId: assigneeId || null,
+            assigneeName: assignee ? assignee.fullName : null,
+            createdTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            fbReviewed: false,
+            underProgress: false,
+            comments: []
+        };
+
+        await db.collection("feedbacks").add(newFeedback);
+
+        // Close modal and refresh board
+        const modal = bootstrap.Modal.getInstance(document.getElementById('createFeedbackModal'));
+        modal.hide();
+        loadFeedbacks();
+
+        // Clear form
+        document.getElementById('newFeedbackMessage').value = '';
+        
+        // Send email notification if assigned
+        if (assignee) {
+            await emailjs.send(
+                "service_v6zcjb6",
+                "template_i3g2pqk",
+                {
+                    to_name: assignee.fullName,
+                    to_email: assignee.email,
+                    feedback_type: feedbackType,
+                    feedback_message: feedbackMessage,
+                    app_url: window.location.origin + '/feedbacks.html'
+                }
+            );
+        }
+
+    } catch (error) {
+        console.error("Error creating feedback:", error);
+        alert("Error creating feedback");
     }
 };
     </script>
