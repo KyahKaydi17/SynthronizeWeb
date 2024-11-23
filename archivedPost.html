@@ -58,6 +58,154 @@
         .btn-close {
             filter: brightness(0) invert(1);
         }
+
+        .dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            width: 500px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .dialog-content {
+            padding: 16px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e4e6eb;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            background-color: #d8dadf;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #e4e6eb;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-circle i {
+            color: #8c939e;
+            font-size: 20px;
+        }
+
+        .post-info {
+            flex-grow: 1;
+        }
+
+        .post-owner {
+            font-weight: 600;
+            color: #050505;
+            margin-bottom: 2px;
+        }
+
+        .post-timestamp {
+            color: #65676b;
+            font-size: 13px;
+        }
+
+        .post-caption {
+            color: #050505;
+            font-size: 15px;
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        .post-details {
+            background-color: #f0f2f5;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .post-details p {
+            margin: 8px 0;
+            color: #65676b;
+            font-size: 14px;
+        }
+
+        /* Facebook-style button */
+        .btn-retrieve {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-retrieve:hover {
+            background-color: #166fe5;
+        }
+
+        /* Add these styles for image handling */
+        .post-image {
+            margin: 12px -16px;
+            background-color: #f0f2f5;
+            max-height: 500px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Add loading animation */
+        .post-image.loading {
+            min-height: 200px;
+            position: relative;
+        }
+
+        .post-image.loading::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -188,20 +336,145 @@
                     <td>${doc.id}</td>
                     <td>${data.originalOwnerId || 'N/A'}</td>
                     <td>${data.archiveDate?.toDate().toLocaleString() || 'N/A'}</td>
-                    <td>
-                        <button class="btn btn-primary" onclick="viewArchiveItem('${doc.id}', ${JSON.stringify(data)})">
-                            View Details
-                        </button>
-                    </td>
+                    <td><button class="btn-retrieve" onclick="retrieveDetails('${doc.id}', '${archiveId}', '${collectionType}')">Retrieve</button></td>
                 `;
                 contentTableBody.appendChild(row);
             });
         }).catch(error => {
-            console.error("Error retrieving content:", error);
-            contentTableBody.innerHTML = '<tr><td colspan="4">Error loading content</td></tr>';
+            console.error("Error loading archives:", error);
         });
 };
 
+// Add mapping for collection types
+const getDestinationCollection = (sourceCollection) => {
+    const mapping = {
+        'archived_posts': 'feeds',
+        'archived_forums': 'forums',
+        'archived_events': 'events'
+    };
+    return mapping[sourceCollection] || 'posts';
+};
+
+// Update retrieveDetails function with retrieve button
+const retrieveDetails = (docId, archiveId, collectionType) => {
+    const documentRef = db.collection("archive").doc(archiveId).collection(collectionType).doc(docId);
+    documentRef.get().then(async doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            let imageUrl = '';
+            
+            // Get image from Storage if contentList exists
+            if (data.contentList && data.contentList.length > 0) {
+                try {
+                    const imageRef = firebase.storage().ref().child(data.contentList[0]);
+                    imageUrl = await imageRef.getDownloadURL();
+                } catch (error) {
+                    console.error("Error fetching image:", error);
+                }
+            }
+
+            const dialog = document.createElement('div');
+            dialog.classList.add('dialog');
+            dialog.innerHTML = `
+                <div class="dialog-content">
+                    <button class="close-button" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="post-header">
+                        <div class="profile-circle">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="post-info">
+                            <div class="post-owner">${data.ownerId || 'Unknown User'}</div>
+                            <div class="post-timestamp">${data.createdTimestamp?.toDate().toLocaleString() || 'N/A'}</div>
+                        </div>
+                    </div>
+
+                    <div class="post-body">
+                        <div class="post-caption">${data.caption || 'No Caption'}</div>
+                        ${imageUrl ? `
+                            <div class="post-image">
+                                <img src="${imageUrl}" alt="Post content" />
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="post-details">
+                        <p><strong>Community:</strong> ${data.communityId || 'N/A'}</p>
+                        <p><strong>Archive ID:</strong> ${archiveId}</p>
+                    </div>
+
+                    <div class="dialog-actions">
+                        <button class="btn-retrieve" onclick="restoreDocument('${docId}', '${archiveId}', '${collectionType}', '${data.communityId}')">
+                            <i class="fas fa-undo"></i> Restore to Community
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dialog);
+        }
+    }).catch(error => {
+        console.error("Error retrieving document:", error);
+    });
+};
+
+// Function to restore document to original collection
+const restoreDocument = async (docId, archiveId, sourceCollection, communityId) => {
+    try {
+        // Get source document
+        const sourceDoc = await db.collection("archive")
+            .doc(archiveId)
+            .collection(sourceCollection)
+            .doc(docId)
+            .get();
+
+        if (!sourceDoc.exists) {
+            throw new Error('Source document not found');
+        }
+
+        const data = sourceDoc.data();
+        const destinationCollection = getDestinationCollection(sourceCollection);
+
+        // Prepare data for restoration
+        const restoreData = {
+            caption: data.caption,
+            createdTimestamp: data.createdTimestamp,
+            ownerId: data.ownerId,
+            postId: docId,
+            communityId: data.communityId,
+            contentList: data.contentList || [],
+            loveList: data.loveList || [],
+            sendPostList: data.sendPostList || []
+        };
+
+        // Write to destination
+        await db.collection("communities")
+            .doc(communityId)
+            .collection(destinationCollection)
+            .doc(docId)
+            .set(restoreData);
+
+        // Show success message
+        showNotification('Document restored successfully!', 'success');
+
+        // Optional: Delete from archive
+        // await sourceDoc.ref.delete();
+
+    } catch (error) {
+        console.error("Error restoring document:", error);
+        showNotification('Error restoring document', 'error');
+    }
+};
+
+// Helper function for notifications
+const showNotification = (message, type) => {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+};
 
         // View archive item details
         const viewArchiveItem = (itemId, data) => {
