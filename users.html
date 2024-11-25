@@ -433,6 +433,7 @@ body {
             <tr>
                 <th style="width: 300px">User</th>
                 <th>User ID</th>
+                <th>Roles</th>  <!-- New column -->
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -517,6 +518,9 @@ body {
             const statusClass = isDisabled ? 'status-inactive' : 'status-active';
             const statusText = isDisabled ? 'Disabled' : 'Active';
             
+            // Get user role with fallback
+            const userRole = user.userType || 'No Role';
+            
             row.innerHTML = `
                 <td>
                     <div class="d-flex align-items-center">
@@ -530,6 +534,9 @@ body {
                 </td>
                 <td>
                     <span style="font-size: 12px; color: var(--jira-text-subtle);">${doc.id}</span>
+                </td>
+                <td>
+                    <span class="badge bg-info">${userRole}</span>
                 </td>
                 <td>
                     <span class="status-badge ${statusClass}">
@@ -683,8 +690,17 @@ body {
         }
 
         function deactivateUser(id) {
-            // Add deactivate user functionality here
-            alert(`Deactivate User: ${id}`);
+            firebase.firestore().collection('users').doc(id).update({
+        userAccess: {
+            Disabled: ""
+        }
+    }).then(() => {
+        alert('User deactivated successfully');
+        // Refresh user list or update UI
+    }).catch(error => {
+        console.error('Error deactivating user:', error);
+        alert('Error unbanning user');
+    });
         }
 
         function exportToExcel() {
