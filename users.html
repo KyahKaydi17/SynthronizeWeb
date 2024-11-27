@@ -7,381 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-
-        .dashboard-header {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-            color: white;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-        }
-
-        .stats-card {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-            transition: transform 0.2s;
-        }
-
-        .stats-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .card-value {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #4e73df;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-box input {
-            padding-left: 2.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid #e3e6f0;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #858796;
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-        }
-
-        .table thead th {
-            background-color: #f8f9fc;
-            border-bottom: 2px solid #e3e6f0;
-            color: #4e73df;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.2rem;
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background-color: #1cc88a;
-            color: white;
-        }
-
-        .filter-section {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .action-btns i {
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s;
-        }
-
-        .action-btns i:hover {
-            background-color: #f8f9fc;
-        }
-
-        .fa-edit {
-            color: #4e73df;
-        }
-
-        .fa-trash-alt {
-            color: #e74a3b;
-        }
-
-        .modal-content {
-            border-radius: 0.5rem;
-        }
-
-        .modal-header {
-            background-color: #4e73df;
-            color: white;
-            border-radius: 0.5rem 0.5rem 0 0;
-        }
-
-        .btn-close {
-            filter: brightness(0) invert(1);
-        }
-
-        /* Add these responsive styles */
-        @media (max-width: 768px) {
-            .dashboard-header {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .stats-card {
-                margin-bottom: 1rem;
-            }
-
-            .card-value {
-                font-size: 1.5rem;
-            }
-
-            .filter-section {
-                padding: 0.75rem;
-            }
-
-            .table-container {
-                padding: 0.75rem;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .btn-action {
-                padding: 0.2rem 0.4rem;
-            }
-
-            .action-btns i {
-                padding: 0.3rem;
-            }
-        }
-
-        /* Make tables responsive */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Adjust modal for mobile */
-        @media (max-width: 576px) {
-            .modal-dialog {
-                margin: 0.5rem;
-            }
-        }
-
-        /* Flexible container padding */
-        .container-fluid {
-            padding-right: max(15px, env(safe-area-inset-right));
-            padding-left: max(15px, env(safe-area-inset-left));
-        }
-
-        /* Responsive text sizes */
-        @media (max-width: 576px) {
-            h1.h3 {
-                font-size: 1.5rem;
-            }
-            
-            .dashboard-header p {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Flexible grid for stats cards */
-        .row {
-            margin-right: -10px;
-            margin-left: -10px;
-        }
-
-        .col-xl-3, .col-md-6 {
-            padding-right: 10px;
-            padding-left: 10px;
-        }
-
-        /* JIRA Theme Colors */
-:root {
-    --jira-blue: #0052CC;
-    --jira-blue-light: #4C9AFF;
-    --jira-bg: #F4F5F7;
-    --jira-text: #172B4D;
-    --jira-text-subtle: #5E6C84;
-    --jira-border: #DFE1E6;
-    --jira-green: #36B37E;
-    --jira-red: #FF5630;
-    --jira-yellow: #FFAB00;
-}
-
-body {
-    background-color: var(--jira-bg);
-    color: var(--jira-text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-}
-
-/* JIRA-style Header */
-.dashboard-header {
-    background: var(--jira-blue);
-    color: white;
-    padding: 24px;
-    margin-bottom: 24px;
-    border-radius: 3px;
-    box-shadow: none;
-}
-
-/* JIRA-style Table/List View */
-.table-container {
-    background: white;
-    border-radius: 3px;
-    border: 1px solid var(--jira-border);
-    box-shadow: 0 1px 1px rgba(9, 30, 66, 0.13);
-    padding: 0;
-}
-
-.table {
-    margin-bottom: 0;
-}
-
-.table thead th {
-    background: var(--jira-bg);
-    color: var(--jira-text-subtle);
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    padding: 8px 16px;
-    border-bottom: 2px solid var(--jira-border);
-}
-
-.table tbody td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--jira-border);
-    color: var(--jira-text);
-}
-
-/* JIRA-style Row Hover */
-.table tbody tr:hover {
-    background-color: #F4F5F7;
-}
-
-/* JIRA-style Status Badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.status-active {
-    background-color: #E3FCEF;
-    color: #006644;
-}
-
-.status-inactive {
-    background-color: #FFEBE6;
-    color: #BF2600;
-}
-
-/* JIRA-style Search and Filters */
-.filter-section {
-    background: white;
-    border: 1px solid var(--jira-border);
-    border-radius: 3px;
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.search-box input {
-    border: 2px solid var(--jira-border);
-    border-radius: 3px;
-    padding: 8px 12px 8px 32px;
-    font-size: 14px;
-}
-
-/* JIRA-style Modals */
-.modal-content {
-    border: none;
-    border-radius: 3px;
-    box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
-}
-
-.modal-header {
-    background: var(--jira-blue);
-    color: white;
-    padding: 16px 24px;
-}
-
-.modal-body {
-    padding: 24px;
-}
-
-/* JIRA-style Buttons */
-.btn-primary {
-    background: var(--jira-blue);
-    border-color: var(--jira-blue);
-}
-
-.btn-primary:hover {
-    background: var(--jira-blue-light);
-    border-color: var(--jira-blue-light);
-}
-
-/* JIRA-style Action Icons */
-.action-btns i {
-    padding: 6px;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-
-.action-btns i:hover {
-    background-color: var(--jira-bg);
-}
-
-/* JIRA-style Form Controls */
-.form-control, .form-select {
-    border: 2px solid var(--jira-border);
-    border-radius: 3px;
-    padding: 8px 12px;
-    color: var(--jira-text);
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--jira-blue-light);
-    box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
-}
-
-/* JIRA-style List View Row */
-.list-view-row {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--jira-border);
-    transition: background-color 0.2s;
-}
-
-.list-view-row:hover {
-    background-color: var(--jira-bg);
-}
-
-/* User Avatar in List */
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 12px;
-}
-    </style>
+   <link rel="stylesheet" href="css/users.css">
 </head>
 <body>
     <div class="container-fluid py-4">
@@ -433,7 +59,8 @@ body {
             <tr>
                 <th style="width: 300px">User</th>
                 <th>User ID</th>
-                <th>Roles</th>  <!-- New column -->
+                <th>Email</th>  <!-- New column -->
+                <th>Roles</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -482,295 +109,7 @@ body {
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     
-    <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
-            authDomain: "synthronize.firebaseapp.com",
-            databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
-            projectId: "synthronize",
-            storageBucket: "synthronize.appspot.com",
-            messagingSenderId: "360481503787",
-            appId: "1:360481503787:web:2ed05b2c6ade021314886e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        let currentUserId = null;
-
-        window.onload = () => {
-            loadUsers();
-            loadRoleChangeRequests();
-        }
-
-        const loadUsers = () => {
-    db.collection("users").get().then(querySnapshot => {
-        const tableBody = document.getElementById('userTableBody');
-        tableBody.innerHTML = '';
-        let activeCount = 0;
-
-        querySnapshot.forEach(doc => {
-            const user = doc.data();
-            const row = document.createElement('tr');
-            
-            // Check if user is banned/disabled
-            const isDisabled = user.userAccess?.Disabled;
-            const statusClass = isDisabled ? 'status-inactive' : 'status-active';
-            const statusText = isDisabled ? 'Disabled' : 'Active';
-            
-            // Get user role with fallback
-            const userRole = user.userType || 'No Role';
-            
-            row.innerHTML = `
-                <td>
-                    <div class="d-flex align-items-center">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&size=32" 
-                             class="user-avatar" alt="${user.fullName}">
-                        <div>
-                            <div style="font-weight: 500; color: var(--jira-text);">${user.fullName}</div>
-                            <div style="font-size: 12px; color: var(--jira-text-subtle);">${user.username}</div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <span style="font-size: 12px; color: var(--jira-text-subtle);">${doc.id}</span>
-                </td>
-                <td>
-                    <span class="badge bg-info">${userRole}</span>
-                </td>
-                <td>
-                    <span class="status-badge ${statusClass}">
-                        ${statusText}
-                    </span>
-                </td>
-                <td class="action-btns">
-                    <i class="fas fa-edit" onclick="editUser('${doc.id}')" 
-                       style="color: var(--jira-blue)" title="Edit User"></i>
-                    <i class="fas fa-ban" onclick="openBanDialog('${doc.id}')" 
-                       style="color: var(--jira-yellow)" title="Ban User"></i>
-                    <i class="fas fa-user-check" onclick="unbanUser('${doc.id}')" 
-                       style="color: var(--jira-green)" title="Unban User"></i>
-                    <i class="fas fa-trash-alt" onclick="deactivateUser('${doc.id}')" 
-                       style="color: var(--jira-red)" title="Deactivate User"></i>
-                </td>
-            `;
-            tableBody.appendChild(row);
-
-            if (user.currentStatus?.lastSeen) {
-                const lastSeenTime = new Date(user.currentStatus.lastSeen.seconds * 1000);
-                const currentTime = new Date();
-                const timeDifference = (currentTime - lastSeenTime) / 1000 / 60;
-                if (timeDifference <= 5) activeCount++;
-            }
-        });
-
-        document.getElementById('onlineUsers').textContent = activeCount;
-    }).catch((error) => {
-        console.error("Error getting users: ", error);
-    });
-}
-
-        const loadRoleChangeRequests = () => {
-    db.collection("account_type_requests").get().then(querySnapshot => {
-        const requestTableBody = document.getElementById('roleRequestsTableBody');
-        requestTableBody.innerHTML = '';
-
-        if (querySnapshot.empty) {
-            requestTableBody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="text-center">No pending role change requests</td>
-                </tr>
-            `;
-            return;
-        }
-
-        querySnapshot.forEach(doc => {
-            const request = doc.data();
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${doc.id}</td>
-                <td>${request.userId}</td>
-                <td>${request.reqAccType}</td>
-                <td>
-                    <i class="fas fa-check-circle text-success me-2" 
-                       onclick="approveRequest('${doc.id}', '${request.userId}', '${request.reqAccType}')"
-                       style="cursor: pointer;" 
-                       title="Approve Request"></i>
-                    <i class="fas fa-times-circle text-danger" 
-                       onclick="rejectRequest('${doc.id}')"
-                       style="cursor: pointer;" 
-                       title="Reject Request"></i>
-                </td>
-            `;
-            requestTableBody.appendChild(row);
-        });
-    }).catch((error) => {
-        console.error("Error getting role change requests: ", error);
-    });
-}
-
-        function getFixedRole(requestedRole) {
-            const validRoles = ["WebAdmin", "AppAdmin", "Student", "Teacher"];
-            return validRoles.includes(requestedRole) ? requestedRole : "Unknown Role";
-        }
-
-        function approveRequest(requestId, userId, newRole) {
-            db.collection("users").doc(userId).update({
-                userType: newRole
-            }).then(() => {
-                return db.collection("roleChangeRequests").doc(requestId).delete();
-            }).then(() => {
-                alert('Role change approved!');
-                loadRoleChangeRequests();
-            }).catch((error) => {
-                console.error("Error approving request: ", error);
-            });
-        }
-
-        function rejectRequest(requestId) {
-            db.collection("roleChangeRequests").doc(requestId).delete().then(() => {
-                alert('Role change request rejected!');
-                loadRoleChangeRequests();
-            }).catch((error) => {
-                console.error("Error rejecting request: ", error);
-            });
-        }
-
-        function searchUsers() {
-            const searchInput = document.getElementById('searchBar').value.toLowerCase();
-            const rows = document.querySelectorAll('#userTableBody tr');
-
-            rows.forEach(row => {
-                const fullName = row.cells[1].textContent.toLowerCase();
-                row.style.display = fullName.includes(searchInput) ? '' : 'none';
-            });
-        }
-
-        function filterUsers() {
-            const selectedRole = document.getElementById('roleFilter').value.toLowerCase();
-            const rows = document.querySelectorAll('#userTableBody tr');
-
-            rows.forEach(row => {
-                const role = row.cells[2].textContent.toLowerCase();
-                row.style.display = (selectedRole === '' || role === selectedRole) ? '' : 'none';
-            });
-        }
-
-        function editUser(id) {
-            currentUserId = id;
-            db.collection("users").doc(id).get().then(doc => {
-                if (doc.exists) {
-                    const user = doc.data();
-                    document.getElementById('editFullName').value = user.fullName;
-                    document.getElementById('editRole').value = user.userType;
-                    document.getElementById('editUsername').value = user.username;
-                    new bootstrap.Modal(document.getElementById('editUserModal')).show();
-                }
-            }).catch((error) => {
-                console.error("Error getting user: ", error);
-            });
-        }
-
-        function saveUserChanges() {
-            const fullName = document.getElementById('editFullName').value;
-            const role = document.getElementById('editRole').value;
-            const username = document.getElementById('editUsername').value;
-
-            db.collection("users").doc(currentUserId).update({
-                fullName: fullName,
-                userType: role,
-                username: username
-            }).then(() => {
-                alert('User updated successfully!');
-                loadUsers();
-                bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
-            }).catch((error) => {
-                console.error("Error updating user: ", error);
-            });
-        }
-
-        function deactivateUser(id) {
-            firebase.firestore().collection('users').doc(id).update({
-        userAccess: {
-            Disabled: ""
-        }
-    }).then(() => {
-        alert('User deactivated successfully');
-        // Refresh user list or update UI
-    }).catch(error => {
-        console.error('Error deactivating user:', error);
-        alert('Error unbanning user');
-    });
-        }
-
-        function exportToExcel() {
-            const table = document.getElementById('userTableBody');
-            const rows = Array.from(table.rows);
-            const data = rows.map(row => {
-                return Array.from(row.cells).slice(0, 4).map(cell => cell.textContent);
-            });
-
-            const worksheet = XLSX.utils.aoa_to_sheet([["User ID", "Full Name", "Role", "Username"], ...data]);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
-            XLSX.writeFile(workbook, "Users.xlsx");
-        }
-
-        let selectedUserId = null;
-
-        function openBanDialog(userId) {
-            selectedUserId = userId;
-            const modal = new bootstrap.Modal(document.getElementById('banUserModal'));
-            modal.show();
-        }
-
-        function confirmBanUser() {
-    const banUntilDate = document.getElementById('banUntilDate').value;
-    if (!banUntilDate) {
-        alert('Please select a date');
-        return;
-    }
-
-    // Format date to mm/dd/yyyy
-    const date = new Date(banUntilDate);
-    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
-
-    // Update user access - storing date in the "Disabled" field
-    firebase.firestore().collection('users').doc(selectedUserId).update({
-        userAccess: {
-            Disabled: formattedDate
-        }
-    }).then(() => {
-        bootstrap.Modal.getInstance(document.getElementById('banUserModal')).hide();
-        alert('User banned successfully');
-        // Refresh user list or update UI
-    }).catch(error => {
-        console.error('Error banning user:', error);
-        alert('Error banning user');
-    });
-}
-
-function unbanUser(userId) {
-    firebase.firestore().collection('users').doc(selectedUserId).update({
-        userAccess: {
-            Disabled: ""
-        }
-    }).then(() => {
-        alert('User unbanned successfully');
-        // Refresh user list or update UI
-    }).catch(error => {
-        console.error('Error unbanning user:', error);
-        alert('Error unbanning user');
-    });
-}
-
-// Add this function to show the modal and load requests
-function showRoleRequests() {
-    loadRoleChangeRequests();
-    new bootstrap.Modal(document.getElementById('roleRequestsModal')).show();
-}
-    </script>
-
+   <script src="js/users.js"></script>
 <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -828,6 +167,88 @@ function showRoleRequests() {
       </div>
     </div>
   </div>
+</div>
+
+<!-- Add this modal for user details -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light border-bottom-0">
+                <div class="d-flex align-items-center">
+                    <img id="userDetailAvatar" class="me-3 rounded-circle" width="48" height="48">
+                    <div>
+                        <h5 class="modal-title mb-1" id="userDetailName"></h5>
+                        <span class="text-muted" id="userDetailUsername"></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- Left column -->
+                        <div class="col-md-8 p-4 border-end">
+                            <div class="mb-4">
+                                <h6 class="text-uppercase text-muted fs-12 fw-bold">Details</h6>
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-3">User ID</dt>
+                                            <dd class="col-sm-9" id="userDetailId"></dd>
+                                            
+                                            <dt class="col-sm-3">Email</dt>
+                                            <dd class="col-sm-9" id="userDetailEmail"></dd>
+                                            
+                                            <dt class="col-sm-3">Role</dt>
+                                            <dd class="col-sm-9">
+                                                <span class="badge bg-primary" id="userDetailRole"></span>
+                                            </dd>
+                                            
+                                            <dt class="col-sm-3">Status</dt>
+                                            <dd class="col-sm-9" id="userDetailStatus"></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="text-uppercase text-muted fs-12 fw-bold">Activity Timeline</h6>
+                                <div class="timeline" id="userDetailTimeline">
+                                    <!-- Timeline items will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right column -->
+                        <div class="col-md-4 p-4">
+                            <h6 class="text-uppercase text-muted fs-12 fw-bold">About</h6>
+                            <div class="mb-3">
+                                <small class="text-muted d-block">Created</small>
+                                <span id="userDetailCreated"></span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block">Last Active</small>
+                                <span id="userDetailLastActive"></span>
+                            </div>
+                            <hr>
+                            <h6 class="text-uppercase text-muted fs-12 fw-bold">Actions</h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="editUser(currentDetailUserId)">
+                                    <i class="fas fa-edit me-2"></i>Edit User
+                                </button>
+                                <button class="btn btn-outline-warning btn-sm" onclick="openBanDialog(currentDetailUserId)">
+                                    <i class="fas fa-ban me-2"></i>Ban User
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="deactivateUser(currentDetailUserId)">
+                                    <i class="fas fa-trash-alt me-2"></i>Deactivate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>
