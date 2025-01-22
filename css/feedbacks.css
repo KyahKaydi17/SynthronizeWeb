@@ -1,9 +1,6 @@
 /* Base styles */
-  :root {
+:root {
     --spacing-unit: clamp(0.5rem, 1vw, 1rem);
-    --card-padding: clamp(0.75rem, 2vw, 1rem);
-    --font-size-base: clamp(14px, 1vw + 0.25rem, 16px);
-    --font-size-large: clamp(18px, 1.5vw + 0.5rem, 24px);
 }
 
 body {
@@ -16,8 +13,7 @@ body {
 /* Responsive container */
 .container-fluid {
     padding: var(--spacing-unit);
-    margin: 0 auto;
-    width: min(100% - 2rem, 1400px);
+    max-width: 100%;
 }
 
 /* Sprint header */
@@ -32,46 +28,36 @@ body {
 /* Board layout */
 .board-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-    gap: clamp(0.5rem, 2vw, 1.5rem);
-    padding: 0;
-    margin-top: var(--spacing-unit);
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: var(--spacing-unit);
+    padding: var(--spacing-unit);
     overflow-x: auto;
 }
 
 /* Column styles */
 .board-column {
     background: #f4f5f7;
-    border-radius: clamp(4px, 1vw, 8px);
-    min-width: 280px;
-    height: min(calc(100vh - 180px), 800px);
+    border-radius: 8px;
+    min-width: min(300px, 100%);
+    height: calc(100vh - clamp(180px, 30vh, 250px));
     overflow-y: auto;
-    padding: var(--card-padding);
+    padding: var(--spacing-unit);
 }
 
 /* Card styles */
 .jira-card {
     background: white;
     border-radius: 3px;
-    padding: var(--card-padding);
-    margin-bottom: var(--card-padding);
+    padding: clamp(0.5rem, 1.5vw, 0.75rem);
+    margin-bottom: clamp(0.5rem, 1.5vw, 0.75rem);
     box-shadow: 0 1px 2px rgba(9, 30, 66, 0.25);
     border: 2px solid transparent;
     cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-@media (hover: hover) {
-    .jira-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15);
-    }
 }
 
 .card-title {
-    font-size: var(--font-size-base);
+    font-size: clamp(0.875rem, 1.2vw, 1rem);
     line-height: 1.4;
-    margin-bottom: 0.5rem;
 }
 
 /* Modal styles */
@@ -115,8 +101,8 @@ body {
 
 /* Status badges */
 .status-badge {
-    padding: clamp(0.25rem, 0.5vw, 0.5rem) clamp(0.5rem, 1vw, 1rem);
-    font-size: clamp(0.75rem, 0.8vw, 0.875rem);
+    padding: clamp(0.2rem, 0.5vw, 0.25rem) clamp(0.5rem, 1vw, 0.75rem);
+    font-size: clamp(0.7rem, 0.8vw, 0.75rem);
 }
 
 /* Card meta elements */
@@ -160,7 +146,6 @@ body {
     .board-column {
         page-break-inside: avoid;
         height: auto;
-        margin-bottom: 2rem;
     }
 }
 
@@ -300,77 +285,53 @@ body {
     background: #f4f5f7;
 }
 
-/* Improved modal responsiveness */
-@media (max-width: 768px) {
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-    
-    .modal-body {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .content-main,
-    .content-side {
-        width: 100%;
-        padding: var(--card-padding);
-    }
-    
-    .content-side {
-        border-top: 1px solid #dfe1e6;
-        border-right: none;
-    }
-
-    .issue-title {
-        font-size: var(--font-size-large);
-    }
+.text-danger {
+    color: #dc3545;
 }
 
-/* Touch-optimized controls */
-@media (pointer: coarse) {
-    .transition-button {
-        padding: 12px 16px;
-        min-height: 44px;
-    }
-    
-    .btn-close {
-        padding: 1rem;
-    }
-    
-    .card-meta > * {
-        min-height: 32px;
-    }
+.transition-button.text-danger:hover {
+    background: #fee2e2;
 }
 
-/* Improved typography scaling */
-.card-title {
-    font-size: var(--font-size-base);
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
+.comments-section {
+    margin-top: 24px;
+    border-top: 1px solid #dfe1e6;
+    padding-top: 24px;
 }
 
-.column-header {
-    font-size: clamp(0.875rem, 1vw + 0.25rem, 1rem);
-    margin-bottom: var(--spacing-unit);
+.comments-list {
+    margin-bottom: 16px;
 }
 
-/* Enhanced modal breakpoints */
-@media (min-width: 769px) {
-    .modal-dialog {
-        width: min(95%, 1140px);
-    }
+.comment-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 3px;
+    background: #f4f5f7;
 }
 
-/* Safe area insets for modern mobile devices */
-@supports (padding: max(0px)) {
-    .container-fluid {
-        padding-left: max(var(--spacing-unit), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-unit), env(safe-area-inset-right));
-    }
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
 }
 
-/* Card styles */
+.comment-content {
+    color: #172b4d;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.comment-input textarea {
+    border: 1px solid #dfe1e6;
+    resize: vertical;
+}
+
+/* Add these styles to your existing CSS */
+
+/* JIRA-style Card */
 .jira-card {
     background: white;
     border: 1px solid #dfe1e6;
@@ -387,6 +348,7 @@ body {
     box-shadow: 0 1px 3px rgba(9, 30, 66, 0.13);
 }
 
+/* Card Header */
 .card-header {
     display: flex;
     align-items: center;
@@ -399,27 +361,24 @@ body {
     font-weight: 500;
 }
 
-.status-icon {
-    margin-right: 8px;
-}
-
-.card-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
+/* Priority Flags */
+.priority-flag {
     font-size: 12px;
-    color: #5e6c84;
 }
 
-/* Status badges */
+.priority-flag.highest { color: #cd1317; }
+.priority-flag.high { color: #e94949; }
+.priority-flag.medium { color: #e97f33; }
+.priority-flag.low { color: #2d8738; }
+.priority-flag.lowest { color: #57a55a; }
+
+/* Status Labels */
 .status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
+    padding: 2px 4px;
     border-radius: 3px;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .status-reviewed {
@@ -430,6 +389,45 @@ body {
 .status-pending {
     background-color: #deebff;
     color: #0747a6;
+}
+
+/* Board Column Headers */
+.column-header {
+    padding: 12px;
+    background: #f4f5f7;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5e6c84;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-count {
+    background: #e3e9f3;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+/* Search and Filter Bar */
+.board-toolbar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 8px 16px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(9, 30, 66, 0.13);
+}
+
+.search-input {
+    border: 2px solid #dfe1e6;
+    border-radius: 3px;
+    padding: 8px 12px;
+    width: 300px;
 }
 
 .filter-dropdown {
@@ -479,67 +477,4 @@ body {
 
 .filter-select option {
     padding: 8px;
-}
-
-/* Create Report Modal Styles */
-#createReportForm .field-group {
-    margin-bottom: 1rem;
-}
-
-#createReportForm .field-label {
-    margin-bottom: 0.5rem;
-    color: #5e6c84;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-#createReportForm .form-control,
-#createReportForm .form-select {
-    border: 2px solid #dfe1e6;
-    border-radius: 3px;
-    padding: 0.5rem;
-    font-size: 0.875rem;
-}
-
-#createReportForm .form-control:focus,
-#createReportForm .form-select:focus {
-    border-color: #4c9aff;
-    box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
-}
-
-#createReportForm textarea {
-    min-height: 120px;
-}
-
-/* Create Report Modal specific styles */
-.create-report-body {
-    padding: 24px;
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-}
-
-#createReportForm {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-#createReportForm .field-group {
-    margin-bottom: 0;
-}
-
-#createReportForm .modal-footer {
-    margin-top: 20px;
-    padding: 16px 0 0 0;
-    border-top: 1px solid #dfe1e6;
-}
-
-#createReportForm .form-select,
-#createReportForm .form-control {
-    width: 100%;
-    max-width: 100%;
-}
-
-#createReportForm textarea {
-    resize: vertical;
 }

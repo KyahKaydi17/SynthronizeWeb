@@ -1,4 +1,5 @@
-// Your Firebase configuration details
+
+// Initialize Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
     authDomain: "synthronize.firebaseapp.com",
@@ -8,174 +9,219 @@ const firebaseConfig = {
     messagingSenderId: "360481503787",
     appId: "1:360481503787:web:2ed05b2c6ade021314886e"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// Reference to the Firestore database
-var db = firebase.firestore();
+window.onload = () => {
+    loadArchiveDocuments();
+};
 
-// Function to display community info
-// Function to display community info
-function displayCommunityInfo(communityID) {
-    db.collection('communities').doc('ur3BwEls70iaLlZN78KO').collection('deleted post').limit(1).get()
-    .then(function(querySnapshot) {
-        if (!querySnapshot.empty) {  // Check if any document exists in the collection
-            var doc = querySnapshot.docs[0];  // Get the first document
-            var communityInfo = doc.data();    // Get the data from the document
-            var communityInfoContainer = document.getElementById('communityInfo');
-            communityInfoContainer.innerHTML = `
-                <p><strong>Owner ID Name:</strong> <input type="text" id="editCommunityName" value="${communityInfo.caption}"></p>
-            `;
-        } else {
-            // No documents found in the 'deleted post' collection
-            document.getElementById('communityInfo').innerHTML = '<p>No community information available.</p>';
+// Load archive documents into dropdown
+const loadArchiveDocuments = () => {
+    const archiveSelect = document.getElementById('archiveSelect');
+    archiveSelect.innerHTML = '<option value="">Select Archive Document</option>';
+    
+    db.collection("archive").get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = doc.id;
+            archiveSelect.appendChild(option);
+        });
+    }).catch(error => {
+        console.error("Error loading archives:", error);
+    });
+};
+
+// Load content based on selections
+const loadContent = () => {
+const archiveId = document.getElementById('archiveSelect').value;
+const collectionType = document.getElementById('collectionSelect').value;
+const contentTableBody = document.getElementById('contentTableBody');
+
+if (!archiveId || !collectionType) {
+contentTableBody.innerHTML = '<tr><td colspan="4">Please select both archive and collection type</td></tr>';
+return;
+}
+
+contentTableBody.innerHTML = '';
+
+// Reference to the document without retrieving its data
+const documentRef = db.collection("archive").doc(archiveId);
+
+// Check if the document has the target subcollection
+documentRef.collection(collectionType).get()
+.then(querySnapshot => {
+    if (querySnapshot.empty) {
+        contentTableBody.innerHTML = '<tr><td colspan="4">No documents found</td></tr>';
+        return;
+    }
+
+    querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${doc.id}</td>
+            <td>${data.originalOwnerId || 'N/A'}</td>
+            <td>${data.archiveDate?.toDate().toLocaleString() || 'N/A'}</td>
+            <td><button class="btn-retrieve" onclick="retrieveDetails('${doc.id}', '${archiveId}', '${collectionType}')">Retrieve</button></td>
+        `;
+        contentTableBody.appendChild(row);
+    });
+}).catch(error => {
+    console.error("Error loading archives:", error);
+});
+};
+
+// Add mapping for collection types
+const getDestinationCollection = (sourceCollection) => {
+const mapping = {
+'archived_posts': 'feeds',
+'archived_forums': 'forums',
+'archived_events': 'events'
+};
+return mapping[sourceCollection] || 'posts';
+};
+
+// Update retrieveDetails function with retrieve button
+const retrieveDetails = (docId, archiveId, collectionType) => {
+const documentRef = db.collection("archive").doc(archiveId).collection(collectionType).doc(docId);
+documentRef.get().then(async doc => {
+if (doc.exists) {
+    const data = doc.data();
+    let imageUrl = '';
+    
+    // Get image from Storage if contentList exists
+    if (data.contentList && data.contentList.length > 0) {
+        try {
+            const imageRef = firebase.storage().ref().child(data.contentList[0]);
+            imageUrl = await imageRef.getDownloadURL();
+        } catch (error) {
+            console.error("Error fetching image:", error);
         }
-    }).catch(function(error) {
-        console.error("Error getting documents: ", error);
-    });
-}
-
-
-
-
-
-// Function to delete community data from Firestore
-function deleteCommunityInfo(communityID) {
-    var confirmDelete = confirm("Are you sure you want to delete this community? This action cannot be undone.");
-    if (confirmDelete) {
-        db.collection('communities').doc(communityID).delete()
-            .then(function() {
-                alert('Community deleted successfully');
-                // Optionally, you can refresh the community list or redirect to another page
-                loadCommunities(); // Replace with your actual function to refresh the community list
-            })
-            .catch(function(error) {
-                console.error("Error deleting community: ", error);
-                alert("Error deleting community: " + error.message);
-            });
     }
+
+    const dialog = document.createElement('div');
+    dialog.classList.add('dialog');
+    dialog.innerHTML = `
+<div class="dialog-content">
+<button class="close-button" onclick="this.parentElement.parentElement.remove()">
+    <i class="fas fa-times"></i>
+</button>
+
+<div class="jira-issue-header">
+    <div class="jira-issue-type">
+        <i class="fas fa-archive"></i> Archived Post
+    </div>
+    <h2 class="jira-issue-title">Post Details</h2>
+</div>
+
+<div class="jira-metadata">
+    <div class="metadata-item">
+        <span class="metadata-label">Owner</span>
+        <span class="metadata-value">${data.ownerId || 'Unknown User'}</span>
+    </div>
+    <div class="metadata-item">
+        <span class="metadata-label">Created</span>
+        <span class="metadata-value">${data.createdTimestamp?.toDate().toLocaleString() || 'N/A'}</span>
+    </div>
+    <div class="metadata-item">
+        <span class="metadata-label">Community</span>
+        <span class="metadata-value">${data.communityId || 'N/A'}</span>
+    </div>
+    <div class="metadata-item">
+        <span class="metadata-label">Archive ID</span>
+        <span class="metadata-value">${archiveId}</span>
+    </div>
+</div>
+
+<div class="jira-content">
+    <div class="jira-section">
+        <h3 class="jira-section-title">Content</h3>
+        <div class="post-caption">${data.caption || 'No Caption'}</div>
+        ${imageUrl ? `
+            <div class="jira-image-container">
+                <img src="${imageUrl}" alt="Post content" style="max-width: 100%; height: auto;"/>
+            </div>
+        ` : ''}
+    </div>
+
+    <button class="btn-retrieve" onclick="restoreDocument('${docId}', '${archiveId}', '${collectionType}', '${data.communityId}')">
+        <i class="fas fa-undo"></i> Restore to Community
+    </button>
+</div>
+</div>
+`;
+    document.body.appendChild(dialog);
+}
+}).catch(error => {
+console.error("Error retrieving document:", error);
+});
+};
+
+// Function to restore document to original collection
+const restoreDocument = async (docId, archiveId, sourceCollection, communityId) => {
+try {
+// Get source document
+const sourceDoc = await db.collection("archive")
+    .doc(archiveId)
+    .collection(sourceCollection)
+    .doc(docId)
+    .get();
+
+if (!sourceDoc.exists) {
+    throw new Error('Source document not found');
 }
 
+const data = sourceDoc.data();
+const destinationCollection = getDestinationCollection(sourceCollection);
 
-//enable edit for types:
-function enableEdit(field) {
-    if (field === 'communityType') {
-        document.getElementById('roleSelect').disabled = false;
-        document.getElementById('saveRole').disabled = false;
-    } else {
-        document.getElementById('edit' + capitalizeFirstLetter(field)).removeAttribute('readonly');
-        document.getElementById('save' + capitalizeFirstLetter(field)).disabled = false;
-    }
+// Prepare data for restoration
+const restoreData = {
+    caption: data.caption,
+    createdTimestamp: data.createdTimestamp,
+    ownerId: data.ownerId,
+    postId: docId,
+    communityId: data.communityId,
+    contentList: data.contentList || [],
+    loveList: data.loveList || [],
+    sendPostList: data.sendPostList || []
+};
+
+// Write to destination
+await db.collection("communities")
+    .doc(communityId)
+    .collection(destinationCollection)
+    .doc(docId)
+    .set(restoreData);
+
+// Show success message
+showNotification('Document restored successfully!', 'success');
+
+// Optional: Delete from archive
+// await sourceDoc.ref.delete();
+
+} catch (error) {
+console.error("Error restoring document:", error);
+showNotification('Error restoring document', 'error');
 }
+};
 
+// Helper function for notifications
+const showNotification = (message, type) => {
+const notification = document.createElement('div');
+notification.className = `notification ${type}`;
+notification.textContent = message;
+document.body.appendChild(notification);
+setTimeout(() => notification.remove(), 3000);
+};
 
-// save community type
-function saveType(communityName) {
-    var role = document.getElementById('roleSelect').value;
-    db.collection('communities').doc(communityName).update({
-        userType:role
-    }).then(function() {
-        alert('Role updated successfully');
-        displayUserInfo(communityName); // Refresh the displayed info
-    }).catch(function(error) {
-        console.error("Error updating document: ", error);
-    });
-}
+// View archive item details
+const viewArchiveItem = (itemId, data) => {
+    document.getElementById('postOwnerId').textContent = data.originalOwnerId || 'N/A';
+    document.getElementById('postTimestamp').textContent = data.archiveDate?.toDate().toLocaleString() || 'N/A';
+    document.getElementById('postCaption').textContent = data.content || 'No content available';
 
-
-// Function to save edited community info
-function saveCommunityInfo(communityID) {
-    var communityName = document.getElementById('editCommunityName').value;
-    var communityType = document.getElementById('editCommunityType').value;
-    var communityCode = document.getElementById('editCommunityCode').value;
-
-    db.collection('communities').doc(communityID).update({
-        communityName: communityName,
-        communityType: communityType,
-        communityCode: communityCode
-    }).then(function() {
-        alert('Community information updated successfully.');
-    }).catch(function(error) {
-        console.error("Error updating document: ", error);
-    });
-}
-
-// Function to search communities
-function searchCommunities() {
-    var input = document.getElementById('searchBar').value.toLowerCase();
-    db.collection('communities').get().then(function(querySnapshot) {
-        var communityList = document.getElementById('list');
-        communityList.innerHTML = '';
-        querySnapshot.forEach(function(doc) {
-            var community = doc.data();
-            if (community.communityName.toLowerCase().includes(input)) {
-                communityList.innerHTML += `<li onclick="displayCommunityInfo('${doc.id}')">${community.communityName}</li>`;
-            }
-        });
-    }).catch(function(error) {
-        console.error("Error getting documents: ", error);
-    });
-}
-
-// Function to create a new community
-function createCommunity() {
-    var communityName = document.getElementById('newCommunityName').value;
-    var communityType = document.getElementById('newCommunityType').value;
-
-    db.collection('communities').add({
-        communityName: communityName,
-        communityType: communityType,
-        communityCode: generateCommunityCode(),
-        communityCreatedTimestamp : firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function() {
-        alert('Community created successfully.');
-        closeCreateCommunityPopup();
-        loadCommunities();
-    }).catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
-}
-
-// Generate a unique community code
-function generateCommunityCode() {
-    return 'COMM-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-}
-
-// Function to open the create community popup
-function openCreateCommunityPopup() {
-    document.getElementById('createCommunityPopup').style.display = 'flex';
-}
-
-// Function to close the create community popup
-function closeCreateCommunityPopup() {
-    document.getElementById('createCommunityPopup').style.display = 'none';
-}
-
-// Load all communities on page load
-window.onload = function() {
-    loadCommunities();
-}
-// Function to show Create Community popup
-function showCreateCommunityPopup() {
-    document.getElementById('createCommunityPopup').style.display = 'flex';
-}
-
-// Function to hide Create Community popup
-function hideCreateCommunityPopup() {
-    document.getElementById('createCommunityPopup').style.display = 'none';
-}
-
-
-function loadCommunities() {
-    db.collection('communities').doc('ur3BwEls70iaLlZN78KO').collection('deleted post').get().then(function(querySnapshot) {
-        var communityList = document.getElementById('list');
-        communityList.innerHTML = '';
-        querySnapshot.forEach(function(doc) {
-            var community = doc.data();
-            communityList.innerHTML += `<li onclick="displayCommunityInfo('this is id${doc.communityId}')">${community.caption}haha</li>`;
-        });
-    }).catch(function(error) {
-        console.error("Error getting documents: ", error);
-    });
-}
+    const postModal = new bootstrap.Modal(document.getElementById('postModal'));
+    postModal.show();
+};

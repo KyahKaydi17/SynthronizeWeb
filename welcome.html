@@ -121,6 +121,9 @@
         .bg-gradient-info {
             background: linear-gradient(45deg, #36b9cc 0%, #258391 100%);
         }
+        .bg-gradient-danger {
+            background: linear-gradient(45deg, #e74a3b 0%, #c0392b 100%);
+        }
         .card {
             border: none;
             box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
@@ -172,23 +175,7 @@
 
         <!-- Stats Row -->
         <div class="row g-3 mb-4">
-            <!-- Active Users Card -->
-            <div class="col-md-3">
-                <div class="card h-100 bg-gradient-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title text-white-50">Active Users</h6>
-                                <h3 class="mb-1" id="activeUsersCount">-</h3>
-                                <small id="weeklyChange">Loading...</small>
-                            </div>
-                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
-                                <i class="fas fa-user-clock fa-lg text-white"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
 
             <!-- Total Users Card -->
             <div class="col-md-3">
@@ -243,6 +230,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Feedbacks Card -->
+            <div class="col-md-3">
+                <div class="card h-100 bg-gradient-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title text-white-50">Feedbacks</h6>
+                                <h3 class="mb-1" id="totalFeedbacksCount">-</h3>
+                                <small id="pendingFeedbacks">Loading...</small>
+                            </div>
+                            <div class="rounded-circle bg-white bg-opacity-25 p-3">
+                                <i class="fas fa-comments fa-lg text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
        
@@ -270,14 +275,17 @@
                     <a href="reports.html" class="btn btn-primary">View Reports</a>
                 </div>
             </div>
+          
+
+            <!-- Feedback Center Card -->
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-comments"></i>
+                        <i class="fas fa-comment-dots"></i>
                     </div>
-                    <h4>Communities</h4>
-                    <p>Foster collaboration and engagement through our community management tools.</p>
-                    <a href="communities.html" class="btn btn-primary">Manage Communities</a>
+                    <h4>Feedback Center</h4>
+                    <p>Monitor and manage user feedback, suggestions, and bug reports.</p>
+                    <a href="feedbacks.html" class="btn btn-primary">View Feedbacks</a>
                 </div>
             </div>
         </div>
@@ -446,6 +454,17 @@
 
                 // Keep existing active users logic
                 await updateActiveUsersCard();
+
+                // Inside updateDashboardStats() function
+                const feedbacksSnapshot = await db.collection("feedbacks").get();
+                const pendingFeedbacks = await db.collection("feedbacks")
+                    .where("fbReviewed", "==", false)
+                    .get();
+
+                // Update feedbacks count
+                document.getElementById('totalFeedbacksCount').textContent = feedbacksSnapshot.size;
+                document.getElementById('pendingFeedbacks').textContent = 
+                    `${pendingFeedbacks.size} pending review`;
 
             } catch (error) {
                 console.error("Error updating dashboard stats:", error);

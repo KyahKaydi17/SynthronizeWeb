@@ -408,7 +408,7 @@
 
             const userData = userDoc.data();
             
-            if (userData.userType !== 'WebAdmin') {
+            if (userData.userType !== 'WebAdmin' && userData.userType !== 'SuperAdmin') {
                 throw new Error('Access denied. Only Web Admins can access this panel.');
             }
 

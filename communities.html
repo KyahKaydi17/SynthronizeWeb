@@ -2,127 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Communities - Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Community Management - Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-
-        .dashboard-header {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-            color: white;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.15);
-        }
-
-        .table-container {
-            background: white;
-            border: 1px solid var(--jira-border);
-            border-radius: 3px;
-            box-shadow: 0 1px 1px rgba(9, 30, 66, 0.13);
-        }
-
-        .table thead th {
-            background: var(--jira-bg);
-            color: var(--jira-text-subtle);
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 8px 16px;
-            border-bottom: 2px solid var(--jira-border);
-        }
-
-        .table tbody td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--jira-border);
-            color: var(--jira-text);
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-box input {
-            padding-left: 2.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid #e3e6f0;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #858796;
-        }
-
-        .action-btns i {
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s;
-        }
-
-        .action-btns i:hover {
-            background-color: #f8f9fc;
-        }
-
-        .fa-edit { color: #4e73df; }
-        .fa-save { color: #1cc88a; }
-        .fa-trash-alt { color: #e74a3b; }
-
-        .editable {
-            background-color: #f8f9fc;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-        }
-
-        .alert {
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hover-row:hover {
-            background-color: var(--jira-bg);
-        }
-
-        /* JIRA Theme Colors */
-        :root {
-            --jira-blue: #0052CC;
-            --jira-blue-light: #4C9AFF;
-            --jira-bg: #F4F5F7;
-            --jira-text: #172B4D;
-            --jira-text-subtle: #5E6C84;
-            --jira-border: #DFE1E6;
-        }
-
-        /* JIRA-style badges */
-        .badge {
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .badge-public {
-            background-color: #E3FCEF;
-            color: #006644;
-        }
-
-        .badge-private {
-            background-color: #DEEBFF;
-            color: #0747A6;
-        }
-    </style>
+    <link rel="stylesheet" href="css/communities.css">
 </head>
 <body>
     <div class="container-fluid py-4">
@@ -130,14 +15,13 @@
         <div class="dashboard-header">
             <div class="row align-items-center">
                 <div class="col">
-                    <h1 class="h3 mb-0">Communities Management</h1>
-                    <p class="mb-0">Manage and monitor community activities</p>
+                    <h1 class="h3 mb-0">Community Management Dashboard</h1>
+                    <p class="mb-0">Manage and monitor communities</p>
                 </div>
                 <div class="col-auto">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchBar" class="form-control" placeholder="Search Communities..." oninput="searchCommunities()">
-                    </div>
+                    <button class="btn btn-light" onclick="showLogHistory()">
+                        <i class="fas fa-history me-2"></i>View Log History
+                    </button>
                 </div>
             </div>
         </div>
@@ -145,22 +29,159 @@
         <!-- Alert Notification -->
         <div class="alert alert-success" id="notification" role="alert" style="display: none;"></div>
 
+        <!-- Search Bar -->
+        <div class="search-container mb-3">
+            <input type="text" id="searchBar" class="form-control" 
+                   placeholder="Search communities..." 
+                   onkeyup="searchCommunities()">
+        </div>
+
         <!-- Main Content -->
-        <div class="table-container">
-            <table class="table">
+        <div class="table-container table-responsive">
+            <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Community ID</th>
-                        <th scope="col">Community Name</th> 
-                        <th scope="col">Type</th>
-                        <th scope="col">Admin</th>
-                        <th scope="col">Actions</th>
+                        <th>Community ID</th>
+                        <th>Community Name</th> 
+                        <th>Type</th>
+                        <th>Admin</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="communitiesTableBody">
                     <!-- Dynamic content here -->
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Log History Modal -->
+    <div class="modal fade" id="logHistoryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light border-bottom-0">
+                    <div class="d-flex align-items-center">
+                        <h5 class="modal-title mb-1">Log History</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="container-fluid">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Community ID</th>
+                                        <th>Performed By</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logHistoryTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Details Modal -->
+    <div class="modal fade" id="communityDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light border-bottom-0">
+                    <div class="d-flex align-items-center">
+                        <img id="communityDetailIcon" class="me-3 rounded-circle" width="48" height="48">
+                        <div>
+                            <h5 class="modal-title mb-1" id="communityDetailName"></h5>
+                            <span class="text-muted" id="communityDetailType"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Left column -->
+                            <div class="col-md-8 p-4 border-end">
+                                <div class="mb-4">
+                                    <h6 class="text-uppercase text-muted fs-12 fw-bold">Details</h6>
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-3">Community ID</dt>
+                                                <dd class="col-sm-9" id="communityDetailId"></dd>
+                                                
+                                                <dt class="col-sm-3">Community Code</dt>
+                                                <dd class="col-sm-9" id="communityCode"></dd>
+
+                                                <dt class="col-sm-3">Type</dt>
+                                                <dd class="col-sm-9" id="communityDetailAccess"></dd>
+                                                
+                                                <dt class="col-sm-3">Status</dt>
+                                                <dd class="col-sm-9" id="communityDetailStatus"></dd>
+                                                
+                                                <dt class="col-sm-3">Members</dt>
+                                                <dd class="col-sm-9" id="communityDetailMembers"></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h6 class="text-uppercase text-muted fs-12 fw-bold">Description</h6>
+                                    <p id="communityDetailDescription"></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Right column -->
+                            <div class="col-md-4 p-4">
+                                <h6 class="text-uppercase text-muted fs-12 fw-bold">About</h6>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Created</small>
+                                    <span id="communityDetailCreated"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Admin</small>
+                                    <span id="communityDetailAdmin"></span>
+                                </div>
+                                <hr>
+                                <h6 class="text-uppercase text-muted fs-12 fw-bold">Actions</h6>
+                                <div class="d-grid gap-2" id="communityDetailActions">
+                                    <!-- Action buttons will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add members list modal -->
+    <div class="modal fade" id="membersListModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Community Members</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Joined Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersListBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -171,148 +192,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
     
     <!-- Keep your existing JavaScript code unchanged -->
-    <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
-            authDomain: "synthronize.firebaseapp.com",
-            databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
-            projectId: "synthronize",
-            storageBucket: "synthronize.appspot.com",
-            messagingSenderId: "360481503787",
-            appId: "1:360481503787:web:2ed05b2c6ade021314886e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        window.onload = () => {
-            loadCommunities();
-        }
-
-        const loadCommunities = async () => {
-            try {
-                const querySnapshot = await db.collection("communities").get();
-                const tableBody = document.getElementById('communitiesTableBody');
-                tableBody.innerHTML = '';
-                
-                for (const doc of querySnapshot.docs) {
-                    const community = doc.data();
-                    const adminUser = await getAdminUser(community.communityMembers);
-                    
-                    const row = document.createElement('tr');
-                    row.classList.add('hover-row');
-                    row.innerHTML = `
-                        <td>${doc.id}</td>
-                        <td contenteditable="false" class="editable">${community.communityName || ''}</td>
-                        <td>
-                            <span class="badge ${community.communityType?.toLowerCase() === 'public' ? 'badge-public' : 'badge-private'}">
-                                ${community.communityType || 'N/A'}
-                            </span>
-                        </td>
-                        <td>${adminUser || 'No admin'}</td>
-                        <td class="action-btns">
-                            <i class="fas fa-edit" onclick="editCommunity('${doc.id}', this)" 
-                               title="Edit Community"></i>
-                            <i class="fas fa-save d-none" onclick="saveCommunity('${doc.id}', this)" 
-                               title="Save Changes"></i>
-                            <i class="fas fa-trash-alt" onclick="deleteCommunity('${doc.id}')" 
-                               title="Delete Community"></i>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                }
-            } catch (error) {
-                console.error("Error loading communities:", error);
-                showNotification("Error loading communities", "danger");
-            }
-        };
-
-        // Add this new helper function to get admin username
-        async function getAdminUser(communityMembers) {
-            if (!communityMembers || !Array.isArray(communityMembers)) {
-                return null;
-            }
-            
-            try {
-                for (const member of communityMembers) {
-                    const userDoc = await db.collection('users').doc(member.userId).get();
-                    if (userDoc.exists && member.role === 'admin') {
-                        const userData = userDoc.data();
-                        return userData.username || 'Unknown';
-                    }
-                }
-                return null;
-            } catch (error) {
-                console.error("Error getting admin user:", error);
-                return null;
-            }
-        }
-
-        function editCommunity(id, editIcon) {
-            const row = editIcon.closest('tr');
-            const cells = row.querySelectorAll('.editable');
-            cells.forEach(cell => cell.contentEditable = true);
-            row.querySelector('.fa-edit').classList.add('d-none');
-            row.querySelector('.fa-save').classList.remove('d-none');
-        }
-
-        function saveCommunity(id, saveIcon) {
-            const row = saveIcon.closest('tr');
-            const cells = row.querySelectorAll('.editable');
-            
-            const updatedData = {
-                communityName: cells[0].textContent,
-                description: cells[1].textContent,
-                members: cells[2].textContent,
-            };
-
-            db.collection("communities").doc(id).update(updatedData)
-                .then(() => {
-                    console.log("Document successfully updated!");
-                    showNotification("Community updated successfully!", "success");
-                    cells.forEach(cell => cell.contentEditable = false);
-                    row.querySelector('.fa-save').classList.add('d-none');
-                    row.querySelector('.fa-edit').classList.remove('d-none');
-                })
-                .catch((error) => {
-                    console.error("Error updating document: ", error);
-                });
-        }
-
-        function deleteCommunity(id) {
-            if (confirm("Are you sure you want to delete this community?")) {
-                db.collection("communities").doc(id).delete()
-                    .then(() => {
-                        console.log("Document successfully deleted!");
-                        loadCommunities();
-                        showNotification("Community deleted successfully!", "success");
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting document: ", error);
-                    });
-            }
-        }
-
-        function searchCommunities() {
-            const searchInput = document.getElementById('searchBar').value.toLowerCase();
-            const rows = document.querySelectorAll('#communitiesTableBody tr');
-            
-            rows.forEach(row => {
-                const communityName = row.cells[0].textContent.toLowerCase();
-                row.style.display = communityName.includes(searchInput) ? '' : 'none';
-            });
-        }
-
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.classList.remove('alert-success', 'alert-danger');
-            notification.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-    </script>
+    <script src="js/communities.js"></script>
 </body>
 </html>

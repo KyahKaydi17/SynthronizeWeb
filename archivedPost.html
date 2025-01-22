@@ -7,400 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --jira-bg: #F4F5F7;
-            --jira-blue: #0052CC;
-            --jira-text: #172B4D;
-            --jira-text-subtle: #6B778C;
-            --jira-border: #DFE1E6;
-            --jira-hover: #EBECF0;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--jira-bg);
-            color: var(--jira-text);
-        }
-
-        .dashboard-header {
-            background: var(--jira-blue);
-            color: white;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-radius: 3px;
-            box-shadow: none;
-        }
-
-        .table-container {
-            background: white;
-            border-radius: 3px;
-            padding: 1.5rem;
-            border: 1px solid var(--jira-border);
-            box-shadow: 0 1px 1px rgba(9, 30, 66, 0.13);
-        }
-
-        .table thead th {
-            background: var(--jira-bg);
-            border-bottom: 2px solid var(--jira-border);
-            color: var(--jira-text-subtle);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 8px 16px;
-        }
-
-        .table tbody td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--jira-border);
-            color: var(--jira-text);
-        }
-
-        .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.2rem;
-        }
-
-        .modal-content {
-            border-radius: 3px;
-            border: none;
-            box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
-        }
-
-        .modal-header {
-            background: var(--jira-bg);
-            color: var(--jira-text);
-            border-bottom: 1px solid var(--jira-border);
-        }
-
-        .btn-close {
-            filter: none;
-        }
-
-        .dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: var(--jira-shadow);
-            border-radius: 3px;
-            width: 800px;
-            max-width: 90vw;
-            max-height: 90vh;
-            overflow-y: auto;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        .dialog-content {
-            padding: 0;
-        }
-
-        .jira-issue-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--jira-border);
-            background: white;
-        }
-
-        .jira-issue-type {
-            display: inline-flex;
-            align-items: center;
-            color: var(--jira-text-subtle);
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .jira-issue-type i {
-            margin-right: 8px;
-            color: #6554C0;
-        }
-
-        .jira-issue-title {
-            font-size: 24px;
-            font-weight: 500;
-            color: var(--jira-text);
-            margin-bottom: 16px;
-        }
-
-        .jira-metadata {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            padding: 16px 24px;
-            background: var(--jira-bg);
-            border-bottom: 1px solid var(--jira-border);
-        }
-
-        .metadata-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .metadata-label {
-            font-size: 12px;
-            color: var(--jira-text-subtle);
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .metadata-value {
-            font-size: 14px;
-            color: var(--jira-text);
-        }
-
-        .jira-content {
-            padding: 24px;
-        }
-
-        .jira-section {
-            margin-bottom: 24px;
-        }
-
-        .jira-section-title {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--jira-text);
-            margin-bottom: 16px;
-        }
-
-        .jira-image-container {
-            background: var(--jira-bg);
-            border: 1px solid var(--jira-border);
-            border-radius: 3px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 32px;
-            height: 32px;
-            border-radius: 3px;
-            background: transparent;
-            border: none;
-            color: var(--jira-text-subtle);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-button:hover {
-            background: var(--jira-hover);
-        }
-
-        .btn-retrieve {
-            margin-top: 16px;
-        }
-
-        .dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
-            border-radius: 3px;
-            width: 500px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        .dialog-content {
-            padding: 16px;
-            border-radius: 3px;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #e4e6eb;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-button:hover {
-            background-color: #d8dadf;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .profile-circle {
-            width: 40px;
-            height: 40px;
-            background-color: #e4e6eb;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-circle i {
-            color: #8c939e;
-            font-size: 20px;
-        }
-
-        .post-info {
-            flex-grow: 1;
-        }
-
-        .post-owner {
-            font-weight: 600;
-            color: #050505;
-            margin-bottom: 2px;
-        }
-
-        .post-timestamp {
-            color: #65676b;
-            font-size: 13px;
-        }
-
-        .post-caption {
-            color: #050505;
-            font-size: 15px;
-            margin: 12px 0;
-            line-height: 1.5;
-        }
-
-        .post-details {
-            background-color: #f0f2f5;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 12px;
-        }
-
-        .post-details p {
-            margin: 8px 0;
-            color: #65676b;
-            font-size: 14px;
-        }
-
-        /* Facebook-style button */
-        .btn-retrieve {
-            background-color: var(--jira-blue);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 3px;
-            font-weight: 600;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .btn-retrieve:hover {
-            background-color: #0747A6;
-        }
-
-        /* Add these styles for image handling */
-        .post-image {
-            margin: 12px -16px;
-            background-color: #f0f2f5;
-            max-height: 500px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
-
-        /* Add loading animation */
-        .post-image.loading {
-            min-height: 200px;
-            position: relative;
-        }
-
-        .post-image.loading::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .form-select {
-            border: 2px solid var(--jira-border);
-            border-radius: 3px;
-            color: var(--jira-text);
-            font-size: 14px;
-        }
-
-        .form-select:focus {
-            border-color: var(--jira-blue);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.2);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            border-radius: 3px;
-            font-size: 14px;
-            z-index: 1000;
-            animation: slide-in 0.3s ease-out;
-        }
-
-        .notification.success {
-            background-color: #00875A;
-            color: white;
-        }
-
-        .notification.error {
-            background-color: #DE350B;
-            color: white;
-        }
-
-        @keyframes slide-in {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-
-        /* JIRA-style hover states */
-        .table tbody tr:hover {
-            background-color: var(--jira-hover);
-        }
-
-        /* Loading states */
-        .loading-spinner {
-            border: 2px solid var(--jira-border);
-            border-top: 2px solid var(--jira-blue);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-    </style>
+    <link rel="stylesheet" href="css/archivedPost.css">
 </head>
 <body>
     <div class="container-fluid py-4">
@@ -464,233 +71,170 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="js/archivedPost.js"></script>
     <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC1Ru73_PthZu4QjBzv9J8bqDr4rtaQWAM",
-            authDomain: "synthronize.firebaseapp.com",
-            databaseURL: "https://synthronize-default-rtdb.firebaseio.com",
-            projectId: "synthronize",
-            storageBucket: "synthronize.appspot.com",
-            messagingSenderId: "360481503787",
-            appId: "1:360481503787:web:2ed05b2c6ade021314886e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        function viewCommunityDetails(communityId) {
+            db.collection("communities").doc(communityId).get().then(async doc => {
+                if (doc.exists) {
+                    const community = doc.data();
+                    
+                    // Get admin username
+                    let adminUsername = 'No admin found';
+                    if (community.communityMembers) {
+                        const admin = community.communityMembers.find(member => member.role === 'admin');
+                        if (admin) {
+                            const userDoc = await db.collection('users').doc(admin.userId).get();
+                            if (userDoc.exists) {
+                                adminUsername = userDoc.data().username;
+                            }
+                        }
+                    }
 
-        window.onload = () => {
-            loadArchiveDocuments();
-        };
+                    document.getElementById('communityDetailsContent').innerHTML = `
+                        <div class="modal-content border-0">
+                            <div class="modal-body p-0">
+                                <!-- Header Section -->
+                                <div class="d-flex align-items-center p-3 border-bottom">
+                                    <div class="community-avatar me-3">
+                                        ${community.communityName.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h4 class="mb-1">${community.communityName}</h4>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge ${community.communityType?.toLowerCase() === 'public' ? 'badge-public' : 'badge-private'} me-2">
+                                                ${community.communityType}
+                                            </span>
+                                            <small class="text-muted">Code: ${community.communityCode || 'N/A'}</small>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
 
-        // Load archive documents into dropdown
-        const loadArchiveDocuments = () => {
-            const archiveSelect = document.getElementById('archiveSelect');
-            archiveSelect.innerHTML = '<option value="">Select Archive Document</option>';
-            
-            db.collection("archive").get().then(querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.textContent = doc.id;
-                    archiveSelect.appendChild(option);
-                });
-            }).catch(error => {
-                console.error("Error loading archives:", error);
-            });
-        };
+                                <!-- Info Cards -->
+                                <div class="p-3">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                <div class="card-body">
+                                                    <h6 class="card-subtitle mb-2 text-muted">About</h6>
+                                                    <p class="card-text">
+                                                        ${community.communityDescription || 'No description available'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                <div class="card-body">
+                                                    <h6 class="card-subtitle mb-3 text-muted">Details</h6>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Created</span>
+                                                        <span>${community.communityCreatedTimestamp?.toDate().toLocaleString() || 'N/A'}</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mb-2">
+                                                        <span class="text-muted">Admin</span>
+                                                        <span>${adminUsername}</span>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span class="text-muted">Members</span>
+                                                        <span>${community.communityMembers?.length || 0}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-        // Load content based on selections
-        const loadContent = () => {
-    const archiveId = document.getElementById('archiveSelect').value;
-    const collectionType = document.getElementById('collectionSelect').value;
-    const contentTableBody = document.getElementById('contentTableBody');
-    
-    if (!archiveId || !collectionType) {
-        contentTableBody.innerHTML = '<tr><td colspan="4">Please select both archive and collection type</td></tr>';
-        return;
-    }
+                                <!-- Members Section -->
+                                <div class="border-top p-3">
+                                    <button class="btn btn-light w-100" onclick="viewCommunityMembers('${doc.id}')">
+                                        <i class="fas fa-users me-2"></i>
+                                        View Members
+                                    </button>
+                                </div>
 
-    contentTableBody.innerHTML = '';
+                                ${community.banned ? `
+                                    <div class="p-3 bg-danger-subtle border-top">
+                                        <div class="d-flex align-items-center text-danger">
+                                            <i class="fas fa-ban me-2"></i>
+                                            <span>Banned until: ${community.banExpiry.toDate().toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
 
-    // Reference to the document without retrieving its data
-    const documentRef = db.collection("archive").doc(archiveId);
+                    // Add Facebook-style CSS if not present
+                    if (!document.getElementById('community-modal-styles')) {
+                        const style = document.createElement('style');
+                        style.id = 'community-modal-styles';
+                        style.textContent = `
+                            .community-avatar {
+                                width: 56px;
+                                height: 56px;
+                                background: #E4E6EB;
+                                color: #050505;
+                                border-radius: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 24px;
+                                font-weight: 600;
+                            }
+                            .modal-content {
+                                border-radius: 8px;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 
+                                          0 8px 16px rgba(0, 0, 0, 0.1);
+                            }
+                            .card {
+                                border-radius: 8px;
+                                transition: transform 0.2s;
+                            }
+                            .card:hover {
+                                transform: translateY(-2px);
+                            }
+                            .badge {
+                                padding: 4px 8px;
+                                font-weight: 500;
+                            }
+                            .btn-light {
+                                background: #E4E6EB;
+                                border: none;
+                                font-weight: 500;
+                            }
+                            .btn-light:hover {
+                                background: #D8DADF;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
 
-    // Check if the document has the target subcollection
-    documentRef.collection(collectionType).get()
-        .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                contentTableBody.innerHTML = '<tr><td colspan="4">No documents found</td></tr>';
-                return;
-            }
-
-            querySnapshot.forEach(doc => {
-                const data = doc.data();
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${doc.id}</td>
-                    <td>${data.originalOwnerId || 'N/A'}</td>
-                    <td>${data.archiveDate?.toDate().toLocaleString() || 'N/A'}</td>
-                    <td><button class="btn-retrieve" onclick="retrieveDetails('${doc.id}', '${archiveId}', '${collectionType}')">Retrieve</button></td>
-                `;
-                contentTableBody.appendChild(row);
-            });
-        }).catch(error => {
-            console.error("Error loading archives:", error);
-        });
-};
-
-// Add mapping for collection types
-const getDestinationCollection = (sourceCollection) => {
-    const mapping = {
-        'archived_posts': 'feeds',
-        'archived_forums': 'forums',
-        'archived_events': 'events'
-    };
-    return mapping[sourceCollection] || 'posts';
-};
-
-// Update retrieveDetails function with retrieve button
-const retrieveDetails = (docId, archiveId, collectionType) => {
-    const documentRef = db.collection("archive").doc(archiveId).collection(collectionType).doc(docId);
-    documentRef.get().then(async doc => {
-        if (doc.exists) {
-            const data = doc.data();
-            let imageUrl = '';
-            
-            // Get image from Storage if contentList exists
-            if (data.contentList && data.contentList.length > 0) {
-                try {
-                    const imageRef = firebase.storage().ref().child(data.contentList[0]);
-                    imageUrl = await imageRef.getDownloadURL();
-                } catch (error) {
-                    console.error("Error fetching image:", error);
+                    new bootstrap.Modal(document.getElementById('communityDetailsModal')).show();
                 }
-            }
+            }).catch(error => {
+                console.error("Error loading community details:", error);
+                showNotification("Error loading community details", "danger");
+            });
+        }
+    </script>
 
-            const dialog = document.createElement('div');
-            dialog.classList.add('dialog');
-            dialog.innerHTML = `
-    <div class="dialog-content">
-        <button class="close-button" onclick="this.parentElement.parentElement.remove()">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <div class="jira-issue-header">
-            <div class="jira-issue-type">
-                <i class="fas fa-archive"></i> Archived Post
+    <!-- Access Denied Modal -->
+    <div class="modal fade" id="accessDeniedModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Access Denied</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Only Super Administrators can view archived post details. Please contact a Super Administrator for access.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
-            <h2 class="jira-issue-title">Post Details</h2>
-        </div>
-
-        <div class="jira-metadata">
-            <div class="metadata-item">
-                <span class="metadata-label">Owner</span>
-                <span class="metadata-value">${data.ownerId || 'Unknown User'}</span>
-            </div>
-            <div class="metadata-item">
-                <span class="metadata-label">Created</span>
-                <span class="metadata-value">${data.createdTimestamp?.toDate().toLocaleString() || 'N/A'}</span>
-            </div>
-            <div class="metadata-item">
-                <span class="metadata-label">Community</span>
-                <span class="metadata-value">${data.communityId || 'N/A'}</span>
-            </div>
-            <div class="metadata-item">
-                <span class="metadata-label">Archive ID</span>
-                <span class="metadata-value">${archiveId}</span>
-            </div>
-        </div>
-
-        <div class="jira-content">
-            <div class="jira-section">
-                <h3 class="jira-section-title">Content</h3>
-                <div class="post-caption">${data.caption || 'No Caption'}</div>
-                ${imageUrl ? `
-                    <div class="jira-image-container">
-                        <img src="${imageUrl}" alt="Post content" style="max-width: 100%; height: auto;"/>
-                    </div>
-                ` : ''}
-            </div>
-
-            <button class="btn-retrieve" onclick="restoreDocument('${docId}', '${archiveId}', '${collectionType}', '${data.communityId}')">
-                <i class="fas fa-undo"></i> Restore to Community
-            </button>
         </div>
     </div>
-`;
-            document.body.appendChild(dialog);
-        }
-    }).catch(error => {
-        console.error("Error retrieving document:", error);
-    });
-};
-
-// Function to restore document to original collection
-const restoreDocument = async (docId, archiveId, sourceCollection, communityId) => {
-    try {
-        // Get source document
-        const sourceDoc = await db.collection("archive")
-            .doc(archiveId)
-            .collection(sourceCollection)
-            .doc(docId)
-            .get();
-
-        if (!sourceDoc.exists) {
-            throw new Error('Source document not found');
-        }
-
-        const data = sourceDoc.data();
-        const destinationCollection = getDestinationCollection(sourceCollection);
-
-        // Prepare data for restoration
-        const restoreData = {
-            caption: data.caption,
-            createdTimestamp: data.createdTimestamp,
-            ownerId: data.ownerId,
-            postId: docId,
-            communityId: data.communityId,
-            contentList: data.contentList || [],
-            loveList: data.loveList || [],
-            sendPostList: data.sendPostList || []
-        };
-
-        // Write to destination
-        await db.collection("communities")
-            .doc(communityId)
-            .collection(destinationCollection)
-            .doc(docId)
-            .set(restoreData);
-
-        // Show success message
-        showNotification('Document restored successfully!', 'success');
-
-        // Optional: Delete from archive
-        // await sourceDoc.ref.delete();
-
-    } catch (error) {
-        console.error("Error restoring document:", error);
-        showNotification('Error restoring document', 'error');
-    }
-};
-
-// Helper function for notifications
-const showNotification = (message, type) => {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
-};
-
-        // View archive item details
-        const viewArchiveItem = (itemId, data) => {
-            document.getElementById('postOwnerId').textContent = data.originalOwnerId || 'N/A';
-            document.getElementById('postTimestamp').textContent = data.archiveDate?.toDate().toLocaleString() || 'N/A';
-            document.getElementById('postCaption').textContent = data.content || 'No content available';
-
-            const postModal = new bootstrap.Modal(document.getElementById('postModal'));
-            postModal.show();
-        };
-    </script>
 </body>
 </html>
